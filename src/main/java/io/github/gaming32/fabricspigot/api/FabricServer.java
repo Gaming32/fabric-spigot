@@ -1,9 +1,15 @@
 package io.github.gaming32.fabricspigot.api;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.CommandNode;
 import io.github.gaming32.fabricspigot.FabricSpigot;
+import io.github.gaming32.fabricspigot.api.command.BukkitCommandWrapper;
+import io.github.gaming32.fabricspigot.api.command.FabricCommandMap;
 import io.github.gaming32.fabricspigot.features.CraftingManagerExtras;
 import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
+import io.github.gaming32.fabricspigot.util.CommandNodeAccess;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
 import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitWorld;
@@ -11,10 +17,14 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.entity.boss.CommandBossBar;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.WorldSavePath;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.gen.WorldPresets;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
@@ -26,6 +36,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerChatTabCompleteEvent;
+import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
@@ -43,6 +55,7 @@ import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
+import org.bukkit.util.StringUtil;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +70,8 @@ import java.util.logging.Logger;
 public class FabricServer implements Server {
     private final Spigot spigot = new Spigot() {
     };
-    private final SimpleCommandMap commandMap = new SimpleCommandMap(this); // TODO: FabricCommandMap
+    private final FabricCommandMap commandMap = new FabricCommandMap(this);
+    private final Set<String> successfullyRegisteredCommands = new HashSet<>();
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
     private final Map<String, World> worlds = new LinkedHashMap<>();
     private final Map<Class<?>, Registry<?>> registries = new HashMap<>();
@@ -825,6 +839,61 @@ public class FabricServer implements Server {
         return Warning.WarningState.DEFAULT;
     }
 
+    public List<String> tabComplete(CommandSender sender, String message, ServerWorld world, Vec3d pos, boolean forceCommand) {
+        if (!(sender instanceof final Player player)) {
+            return ImmutableList.of();
+        }
+
+        final List<String> offers;
+        if (forceCommand || message.startsWith("/")) {
+            offers = tabCompleteCommand(player, message, world, pos);
+        } else {
+            offers = tabCompleteChat(player, message);
+        }
+
+        final TabCompleteEvent tabEvent = new TabCompleteEvent(player, message, offers);
+        getPluginManager().callEvent(tabEvent);
+
+        return tabEvent.isCancelled() ? Collections.emptyList() : tabEvent.getCompletions();
+    }
+
+    public List<String> tabCompleteCommand(Player player, String message, ServerWorld world, Vec3d pos) {
+        List<String> completions = null;
+        try {
+            if (message.startsWith("/")) {
+                message = message.substring(1);
+            }
+            if (pos == null) {
+                completions = commandMap.tabComplete(player, message);
+            } else {
+                completions = commandMap.tabComplete(player, message, new Location(((HasBukkitWorld)world).getBukkitWorld(), pos.x, pos.y, pos.z));
+            }
+        } catch (CommandException ex) {
+            player.sendMessage(ChatColor.RED + "An internal error occurred while attempting to tab-complete this command");
+            getLogger().log(Level.SEVERE, "Exception when " + player.getName() + " attempted to tab complete " + message, ex);
+        }
+
+        return completions == null ? ImmutableList.of() : completions;
+    }
+
+    @SuppressWarnings("deprecation")
+    public List<String> tabCompleteChat(Player player, String message) {
+        final List<String> completions = new ArrayList<>();
+        final PlayerChatTabCompleteEvent event = new PlayerChatTabCompleteEvent(player, message, completions);
+        String token = event.getLastToken();
+        for (Player p : getOnlinePlayers()) {
+            if (player.canSee(p) && StringUtil.startsWithIgnoreCase(p.getName(), token)) {
+                completions.add(p.getName());
+            }
+        }
+        pluginManager.callEvent(event);
+
+        // Sanity
+        completions.removeIf(Objects::isNull);
+        completions.sort(String.CASE_INSENSITIVE_ORDER);
+        return completions;
+    }
+
     @NotNull
     @Override
     public ItemFactory getItemFactory() {
@@ -1063,6 +1132,7 @@ public class FabricServer implements Server {
             DefaultPermissions.registerCorePermissions();
             // TODO: FabricDefaultPermissions.registerCorePermissions?
             // TODO: More permissions and command stuff
+            syncCommands();
         }
     }
 
@@ -1086,7 +1156,39 @@ public class FabricServer implements Server {
         }
     }
 
+    public void syncCommands() {
+        final CommandDispatcher<ServerCommandSource> dispatcher = getHandle().getCommandManager().getDispatcher();
+
+        for (final var entry : commandMap.getKnownCommands().entrySet()) {
+            final String label = entry.getKey();
+            final Command command = entry.getValue();
+
+            if (dispatcher.getRoot().getChild(label) != null) {
+                FabricSpigot.LOGGER.info("Skipped registering command /{}, as it was already added by Vanilla or a Fabric mod.", label);
+                continue;
+            }
+
+            successfullyRegisteredCommands.add(label);
+            new BukkitCommandWrapper(this, command).register(dispatcher, label);
+        }
+
+        resendCommands();
+    }
+
+    private void resendCommands() {
+        for (final ServerPlayerEntity player : getHandle().getPlayerManager().getPlayerList()) {
+            server.getCommandManager().sendCommandTree(player);
+        }
+    }
+
     public void disablePlugins() {
+        final CommandNode<?> root = server.getCommandManager().getDispatcher().getRoot();
+        for (final String toRemove : successfullyRegisteredCommands) {
+            ((CommandNodeAccess)root).getChildren().remove(toRemove);
+            ((CommandNodeAccess)root).getLiterals().remove(toRemove);
+        }
+        successfullyRegisteredCommands.clear();
+        resendCommands();
         pluginManager.disablePlugins();
     }
 }

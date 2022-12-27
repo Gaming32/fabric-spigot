@@ -4,11 +4,13 @@
   "package": "io.github.gaming32.fabricspigot.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CommandNodeAccessor",
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
     "MixinRecipeManager",
-    "MixinText",
-    "MixinServerWorld"
+    "MixinServerCommandSource",
+    "MixinServerWorld",
+    "MixinText"
   ],
   "client": [
     "client.MixinIntegratedServer"

@@ -34,6 +34,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.util.Commodore;
 import org.bukkit.inventory.CreativeCategory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -160,9 +161,18 @@ public class FabricUnsafeValues implements UnsafeValues {
         }
     }
 
+    public static boolean isLegacy(PluginDescriptionFile pdf) {
+        return pdf.getAPIVersion() == null;
+    }
+
     @Override
     public byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz) {
-        // TODO: Implement Spigot Commodore to update API version. This is also where we'll implement NMS remapping.
+        try {
+            clazz = Commodore.convert(clazz, !isLegacy(pdf));
+        } catch (Exception ex) {
+            FabricSpigot.LOGGER.error("Failed to convert " + pdf.getName() + ":" + path, ex);
+        }
+        // TODO: Implement NMS remapping.
         return clazz;
     }
 
