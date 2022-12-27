@@ -1,0 +1,21 @@
+accessWidener	v1	named
+accessible	field	net/minecraft/server/dedicated/ServerPropertiesHandler	worldGenProperties	Lnet/minecraft/server/dedicated/ServerPropertiesHandler$WorldGenProperties;
+accessible	field	net/minecraft/server/dedicated/ServerPropertiesHandler$WorldGenProperties	levelType	Ljava/lang/String;
+accessible	field	net/minecraft/server/MinecraftServer	session	Lnet/minecraft/world/level/storage/LevelStorage$Session;
+accessible	field	net/minecraft/text/TextColor	name	Ljava/lang/String;
+accessible	field	net/minecraft/server/ServerAdvancementLoader	GSON	Lcom/google/gson/Gson;
+accessible	field	net/minecraft/server/ServerAdvancementLoader	manager	Lnet/minecraft/advancement/AdvancementManager;
+accessible	field	net/minecraft/server/world/ServerWorld	entityManager	Lnet/minecraft/server/world/ServerEntityManager;
+accessible	field	net/minecraft/server/world/ServerEntityManager	dataAccess	Lnet/minecraft/world/storage/ChunkDataAccess;
+accessible	method	net/minecraft/server/world/ThreadedAnvilChunkStorage	getUpdatedChunkNbt	(Lnet/minecraft/util/math/ChunkPos;)Ljava/util/concurrent/CompletableFuture;
+accessible	field	net/minecraft/server/world/ThreadedAnvilChunkStorage	chunkHolders	Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;
+accessible	field	net/minecraft/server/world/ChunkHolder	playersWatchingChunkProvider	Lnet/minecraft/server/world/ChunkHolder$PlayersWatchingChunkProvider;
+accessible	field	net/minecraft/server/world/ChunkTicketManager	ticketsByPosition	Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
+accessible	field	net/minecraft/server/world/ChunkTicket	argument	Ljava/lang/Object;
+accessible	field	net/minecraft/server/world/ServerWorld	worldProperties	Lnet/minecraft/world/level/ServerWorldProperties;
+accessible	field	net/minecraft/server/world/ServerChunkManager	spawnAnimals	Z
+accessible	field	net/minecraft/server/world/ServerChunkManager	spawnMonsters	Z
+accessible	method	net/minecraft/world/biome/Biome	getTemperature	(Lnet/minecraft/util/math/BlockPos;)F
+accessible	field	net/minecraft/world/level/LevelProperties	levelInfo	Lnet/minecraft/world/level/LevelInfo;
+accessible	field	net/minecraft/world/level/LevelInfo	hardcore	Z
+mutable	field	net/minecraft/world/level/LevelInfo	hardcore	Z
