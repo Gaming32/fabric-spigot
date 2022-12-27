@@ -4,7 +4,6 @@ import io.github.gaming32.fabricspigot.util.Conversion;
 import net.minecraft.registry.Registries;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.generator.structure.Structure;
 import org.bukkit.generator.structure.StructureType;
 import org.jetbrains.annotations.NotNull;
 

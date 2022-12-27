@@ -1,6 +1,5 @@
 package io.github.gaming32.fabricspigot.api;
 
-import io.github.gaming32.fabricspigot.FabricSpigot;
 import io.github.gaming32.fabricspigot.api.generator.structure.FabricStructure;
 import io.github.gaming32.fabricspigot.api.generator.structure.FabricStructureType;
 import io.github.gaming32.fabricspigot.util.Conversion;

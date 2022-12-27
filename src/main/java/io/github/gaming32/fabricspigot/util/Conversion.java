@@ -1,12 +1,8 @@
 package io.github.gaming32.fabricspigot.util;
 
-import io.github.gaming32.fabricspigot.api.FabricUnsafeValues;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Heightmap;
 import org.bukkit.HeightMap;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 
 public class Conversion {

@@ -1,7 +1,5 @@
 package io.github.gaming32.fabricspigot.mixin;
 
-import com.google.common.collect.Streams;
-import io.github.gaming32.fabricspigot.util.Streamable;
 import io.github.gaming32.fabricspigot.util.TextStreamable;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
