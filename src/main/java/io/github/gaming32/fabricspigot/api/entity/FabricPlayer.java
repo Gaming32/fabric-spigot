@@ -7,6 +7,7 @@ import io.github.gaming32.fabricspigot.api.FabricOfflinePlayer;
 import io.github.gaming32.fabricspigot.api.FabricServer;
 import io.github.gaming32.fabricspigot.api.FabricWorld;
 import io.github.gaming32.fabricspigot.api.conversations.ConversationTracker;
+import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
 import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
@@ -15,6 +16,7 @@ import net.minecraft.network.packet.s2c.play.PlayerSpawnPositionS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.bukkit.*;
@@ -362,14 +364,18 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
     public void sendRawMessage(@NotNull String message) {
         if (getHandle().networkHandler == null) return;
 
-        throw new NotImplementedYet("fromString");
+        for (final Text component : ChatMessageConversion.fromString(message)) {
+            getHandle().sendMessage(component);
+        }
     }
 
     @Override
     public void sendRawMessage(@Nullable UUID sender, @NotNull String message) {
         if (getHandle().networkHandler == null) return;
 
-        throw new NotImplementedYet("fromString");
+        for (final Text component : ChatMessageConversion.fromString(message)) {
+            getHandle().sendMessage(component);
+        }
     }
 
     @Override

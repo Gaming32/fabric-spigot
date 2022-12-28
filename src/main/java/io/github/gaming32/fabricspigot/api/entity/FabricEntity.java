@@ -795,7 +795,7 @@ public abstract class FabricEntity implements Entity {
     @NotNull
     @Override
     public String getName() {
-        return ChatMessageConversion.componentToSpigot(getHandle().getName());
+        return ChatMessageConversion.fromComponent(getHandle().getName());
     }
 
     @Override
@@ -867,7 +867,7 @@ public abstract class FabricEntity implements Entity {
     @Override
     public String getCustomName() {
         final Text name = getHandle().getCustomName();
-        return name != null ? ChatMessageConversion.componentToSpigot(name) : null;
+        return name != null ? ChatMessageConversion.fromComponent(name) : null;
     }
 
     @Override

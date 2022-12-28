@@ -226,7 +226,7 @@ public class FabricServer implements Server {
         return getHandle() instanceof DedicatedServer dedicated
             ? dedicated.getProperties().serverResourcePackProperties
                 .map(MinecraftServer.ServerResourcePackProperties::prompt)
-                .map(ChatMessageConversion::componentToSpigot)
+                .map(ChatMessageConversion::fromComponent)
                 .orElse("")
             : "";
     }
