@@ -3,10 +3,14 @@ package io.github.gaming32.fabricspigot.api;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.gaming32.fabricspigot.FabricSpigot;
 import io.github.gaming32.fabricspigot.api.command.BukkitCommandWrapper;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandMap;
+import io.github.gaming32.fabricspigot.api.command.FabricCommandWrapper;
+import io.github.gaming32.fabricspigot.api.help.SimpleHelpMap;
 import io.github.gaming32.fabricspigot.features.CraftingManagerExtras;
 import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
 import io.github.gaming32.fabricspigot.util.CommandNodeAccess;
@@ -18,6 +22,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.entity.boss.CommandBossBar;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -70,10 +75,12 @@ public class FabricServer implements Server {
     private final Spigot spigot = new Spigot() {
     };
     private final FabricCommandMap commandMap = new FabricCommandMap(this);
+    private final SimpleHelpMap helpMap = new SimpleHelpMap(this);
     private final Set<String> successfullyRegisteredCommands = new HashSet<>();
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
     private final Map<String, World> worlds = new LinkedHashMap<>();
     private final Map<Class<?>, Registry<?>> registries = new HashMap<>();
+    private boolean commandSyncReady;
     private List<? extends Player> onlinePlayers;
     private Integer overrideSpawnProtection;
     private MinecraftServer server;
@@ -90,6 +97,7 @@ public class FabricServer implements Server {
             throw new IllegalStateException("Attempted to set handle with already matching server state");
         }
         this.server = server;
+        commandSyncReady = false;
         if (server != null) {
             server.setBukkitServer(this);
             //noinspection StaticPseudoFunctionalStyleMethod
@@ -749,7 +757,11 @@ public class FabricServer implements Server {
     @NotNull
     @Override
     public HelpMap getHelpMap() {
-        throw new NotImplementedYet();
+        return helpMap;
+    }
+
+    public SimpleCommandMap getCommandMap() {
+        return commandMap;
     }
 
     @NotNull
@@ -1128,7 +1140,8 @@ public class FabricServer implements Server {
 
     public void enablePlugins(PluginLoadOrder type) {
         if (type == PluginLoadOrder.STARTUP) {
-            // TODO: helpMap
+            helpMap.clear();
+            helpMap.initializeGeneralTopics();
         }
 
         for (final Plugin plugin : pluginManager.getPlugins()) {
@@ -1139,11 +1152,12 @@ public class FabricServer implements Server {
 
         if (type == PluginLoadOrder.POSTWORLD) {
             commandMap.setFallbackCommands();
-//            setVanillaCommands();
+            setVanillaCommands();
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             // TODO: FabricDefaultPermissions.registerCorePermissions?
             // TODO: More permissions and command stuff
+            helpMap.initializeCommands();
             syncCommands();
         }
     }
@@ -1168,23 +1182,59 @@ public class FabricServer implements Server {
         }
     }
 
+    private void setVanillaCommands() {
+        final CommandManager commandManager = getHandle().getCommandManager();
+        for (final var command : commandManager.getDispatcher().getRoot().getChildren()) {
+            if (!(command instanceof LiteralCommandNode<ServerCommandSource> node)) {
+                FabricSpigot.LOGGER.warn("Child of root command node {} was not a literal.", command);
+                continue;
+            }
+            commandMap.register("fabric", new FabricCommandWrapper(commandManager, node));
+        }
+    }
+
+    public void reloadVanillaCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+        if (server != null && commandSyncReady) {
+            successfullyRegisteredCommands.clear();
+            syncCommands(dispatcher);
+        }
+    }
+
     public void syncCommands() {
-        final CommandDispatcher<ServerCommandSource> dispatcher = getHandle().getCommandManager().getDispatcher();
+        syncCommands(getHandle().getCommandManager().getDispatcher());
+    }
+
+    private void syncCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+        commandSyncReady = false;
 
         for (final var entry : commandMap.getKnownCommands().entrySet()) {
             final String label = entry.getKey();
             final Command command = entry.getValue();
 
-            if (dispatcher.getRoot().getChild(label) != null) {
-                FabricSpigot.LOGGER.info("Skipped registering command /{}, as it was already added by Vanilla or a Fabric mod.", label);
+            if (!label.equals("help") && dispatcher.getRoot().getChild(label) != null) {
+                if (commandMap.getCommand("fabric:" + label) != command) {
+                    FabricSpigot.LOGGER.info("Skipped registering command /{}, as it was already added by Vanilla or a Fabric mod.", label);
+                }
                 continue;
             }
 
             successfullyRegisteredCommands.add(label);
-            new BukkitCommandWrapper(this, command).register(dispatcher, label);
+            if (command instanceof FabricCommandWrapper fabricCommand) {
+                final var node = fabricCommand.fabricCommand;
+                dispatcher.register(
+                    LiteralArgumentBuilder.<ServerCommandSource>literal(label)
+                        .requires(node.getRequirement())
+                        .forward(node.getRedirect(), node.getRedirectModifier(), node.isFork())
+                        .executes(node.getCommand())
+                );
+            } else {
+                new BukkitCommandWrapper(this, command).register(dispatcher, label);
+            }
         }
 
         resendCommands();
+
+        commandSyncReady = true;
     }
 
     private void resendCommands() {

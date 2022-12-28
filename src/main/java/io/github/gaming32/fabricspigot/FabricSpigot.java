@@ -2,6 +2,7 @@ package io.github.gaming32.fabricspigot;
 
 import io.github.gaming32.fabricspigot.api.FabricServer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.File;
+import java.util.Optional;
 
 public class FabricSpigot implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("fabric-spigot");
@@ -25,8 +27,7 @@ public class FabricSpigot implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        FabricLoader.getInstance()
-            .getModContainer("fabric-spigot")
+        getModContainer()
             .map(ModContainer::getMetadata)
             .map(ModMetadata::getVersion)
             .ifPresent(v -> modVersion = v.getFriendlyString());
@@ -36,9 +37,13 @@ public class FabricSpigot implements ModInitializer {
 
         Bukkit.setServer(SERVER);
 
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            SERVER.setServer(null);
-        });
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> SERVER.setServer(null));
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> SERVER.reloadVanillaCommands(dispatcher));
+    }
+
+    public static Optional<ModContainer> getModContainer() {
+        return FabricLoader.getInstance().getModContainer("fabric-spigot");
     }
 
     public static String getModVersion() {
