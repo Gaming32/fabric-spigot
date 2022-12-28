@@ -19,3 +19,27 @@ accessible	method	net/minecraft/world/biome/Biome	getTemperature	(Lnet/minecraft
 accessible	field	net/minecraft/world/level/LevelProperties	levelInfo	Lnet/minecraft/world/level/LevelInfo;
 accessible	field	net/minecraft/world/level/LevelInfo	hardcore	Z
 mutable	field	net/minecraft/world/level/LevelInfo	hardcore	Z
+accessible	field	net/minecraft/world/WorldSaveHandler	playerDataDir	Ljava/io/File;
+accessible	field	net/minecraft/entity/projectile/PersistentProjectileEntity	inGround	Z
+accessible	method	net/minecraft/entity/Entity	getBurningDuration	()I
+accessible	field	net/minecraft/entity/Entity	hasVisualFire	Z
+accessible	method	net/minecraft/entity/Entity	getSwimSound	()Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/Entity	getSplashSound	()Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/Entity	getHighSpeedSplashSound	()Lnet/minecraft/sound/SoundEvent;
+accessible	field	net/minecraft/entity/Entity	portalCooldown	I
+mutable	field	net/minecraft/entity/LivingEntity	defaultMaxHealth	I
+accessible	field	net/minecraft/entity/LivingEntity	lastDamageTaken	F
+accessible	field	net/minecraft/server/network/ServerPlayerEntity	joinInvulnerabilityTicks	I
+accessible	field	net/minecraft/entity/LivingEntity	attackingPlayer	Lnet/minecraft/entity/player/PlayerEntity;
+accessible	field	net/minecraft/entity/Entity	FALL_FLYING_FLAG_INDEX	I
+accessible	method	net/minecraft/entity/Entity	setFlag	(IZ)V
+accessible	method	net/minecraft/entity/LivingEntity	getHurtSound	(Lnet/minecraft/entity/damage/DamageSource;)Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/LivingEntity	getDeathSound	()Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/LivingEntity	getFallSound	(I)Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/LivingEntity	getDrinkSound	(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/sound/SoundEvent;
+accessible	method	net/minecraft/entity/player/PlayerEntity	closeHandledScreen	()V
+accessible	class	net/minecraft/entity/player/ItemCooldownManager$Entry
+accessible	field	net/minecraft/entity/player/ItemCooldownManager	entries	Ljava/util/Map;
+accessible	field	net/minecraft/entity/player/ItemCooldownManager$Entry	endTick	I
+accessible	field	net/minecraft/entity/player/ItemCooldownManager	tick	I
+accessible	field	net/minecraft/recipe/book/RecipeBook	recipes	Ljava/util/Set;

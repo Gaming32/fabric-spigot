@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldSaveHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.spongepowered.asm.mixin.Final;
@@ -26,6 +27,7 @@ public abstract class MixinMinecraftServer implements MinecraftServerExt, Comman
     @Shadow
     @Final
     private Map<RegistryKey<World>, ServerWorld> worlds;
+    @Shadow @Final protected WorldSaveHandler saveHandler;
     private FabricServer fabricSpigot$bukkitServer;
 
     @Override
@@ -74,5 +76,10 @@ public abstract class MixinMinecraftServer implements MinecraftServerExt, Comman
     @Override
     public CommandSender getBukkitSender(ServerCommandSource commandSource) {
         return FabricConsoleCommandSender.getInstance();
+    }
+
+    @Override
+    public WorldSaveHandler getSaveHandler() {
+        return saveHandler;
     }
 }

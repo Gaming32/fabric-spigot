@@ -27,7 +27,8 @@
       "net/minecraft/server/MinecraftServer": ["io/github/gaming32/fabricspigot/vanillaimpl/MinecraftServerExt"],
       "net/minecraft/class_3218": ["io/github/gaming32/fabricspigot/vanillaimpl/ServerWorldExt"],
       "net/minecraft/class_2168": ["io/github/gaming32/fabricspigot/vanillaimpl/ServerCommandSourceExt"],
-      "net/minecraft/class_2165": ["io/github/gaming32/fabricspigot/vanillaimpl/CommandOutputExt"]
+      "net/minecraft/class_2165": ["io/github/gaming32/fabricspigot/vanillaimpl/CommandOutputExt"],
+      "net/minecraft/class_1297": ["io/github/gaming32/fabricspigot/vanillaimpl/EntityExt"]
     }
   },
   "depends": {
