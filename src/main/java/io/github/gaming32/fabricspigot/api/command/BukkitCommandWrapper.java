@@ -11,7 +11,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.gaming32.fabricspigot.api.FabricServer;
-import io.github.gaming32.fabricspigot.vanillaimpl.BukkitServerCommandSource;
+import io.github.gaming32.fabricspigot.vanillaimpl.ServerCommandSourceExt;
 import net.minecraft.server.command.ServerCommandSource;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
@@ -40,12 +40,12 @@ public class BukkitCommandWrapper implements com.mojang.brigadier.Command<Server
 
     @Override
     public boolean test(ServerCommandSource wrapper) {
-        return command.testPermissionSilent(((BukkitServerCommandSource)wrapper).getBukkitSender());
+        return command.testPermissionSilent(((ServerCommandSourceExt)wrapper).getBukkitSender());
     }
 
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        CommandSender sender = ((BukkitServerCommandSource)context.getSource()).getBukkitSender();
+        CommandSender sender = ((ServerCommandSourceExt)context.getSource()).getBukkitSender();
 
         try {
             return server.dispatchCommand(sender, context.getInput()) ? 1 : 0;
@@ -58,7 +58,7 @@ public class BukkitCommandWrapper implements com.mojang.brigadier.Command<Server
 
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-        List<String> results = server.tabComplete(((BukkitServerCommandSource)context.getSource()).getBukkitSender(), builder.getInput(), context.getSource().getWorld(), context.getSource().getPosition(), true);
+        List<String> results = server.tabComplete(((ServerCommandSourceExt)context.getSource()).getBukkitSender(), builder.getInput(), context.getSource().getWorld(), context.getSource().getPosition(), true);
 
         // Defaults to sub nodes, but we have just one giant args node, so offset accordingly
         builder = builder.createOffset(builder.getInput().lastIndexOf(' ') + 1);

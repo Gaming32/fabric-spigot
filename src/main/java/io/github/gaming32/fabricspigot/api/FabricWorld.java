@@ -7,7 +7,7 @@ import io.github.gaming32.fabricspigot.api.inventory.FabricItemStack;
 import io.github.gaming32.fabricspigot.util.BukkitTicket;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
-import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitWorld;
+import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LightningEntity;
@@ -1033,7 +1033,7 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     @NotNull
     @Override
     public File getWorldFolder() {
-        return ((HasBukkitWorld)world).getSession().getDirectory(WorldSavePath.ROOT).toFile();
+        return ((ServerWorldExt)world).getSession().getDirectory(WorldSavePath.ROOT).toFile();
     }
 
     @Nullable

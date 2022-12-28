@@ -2,6 +2,6 @@ package io.github.gaming32.fabricspigot.vanillaimpl;
 
 import org.bukkit.command.CommandSender;
 
-public interface BukkitServerCommandSource {
+public interface ServerCommandSourceExt {
     CommandSender getBukkitSender();
 }

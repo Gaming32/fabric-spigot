@@ -16,7 +16,7 @@ import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
 import io.github.gaming32.fabricspigot.util.CommandNodeAccess;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
-import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitWorld;
+import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.boss.BossBarManager;
@@ -414,7 +414,7 @@ public class FabricServer implements Server {
             return false;
         }
 
-        final WorldUnloadEvent e = new WorldUnloadEvent(((HasBukkitWorld)handle).getBukkitWorld());
+        final WorldUnloadEvent e = new WorldUnloadEvent(((ServerWorldExt)handle).getBukkitWorld());
         pluginManager.callEvent(e);
 
         if (e.isCancelled()) return false;
@@ -429,7 +429,7 @@ public class FabricServer implements Server {
                 handle.entityManager.flush();
             }
             handle.entityManager.dataAccess.close();
-            ((HasBukkitWorld)handle).getSession().close();
+            ((ServerWorldExt)handle).getSession().close();
         } catch (Exception ex) {
             FabricSpigot.LOGGER.error(null, ex);
         }
@@ -890,7 +890,7 @@ public class FabricServer implements Server {
             if (pos == null) {
                 completions = commandMap.tabComplete(player, message);
             } else {
-                completions = commandMap.tabComplete(player, message, new Location(((HasBukkitWorld)world).getBukkitWorld(), pos.x, pos.y, pos.z));
+                completions = commandMap.tabComplete(player, message, new Location(((ServerWorldExt)world).getBukkitWorld(), pos.x, pos.y, pos.z));
             }
         } catch (CommandException ex) {
             player.sendMessage(ChatColor.RED + "An internal error occurred while attempting to tab-complete this command");
@@ -1189,6 +1189,7 @@ public class FabricServer implements Server {
                 FabricSpigot.LOGGER.warn("Child of root command node {} was not a literal.", command);
                 continue;
             }
+            if (node.getName().equals("help")) continue; // Don't create a /fabric:help, as that would just redirect to our overwrite anyway.
             commandMap.register("fabric", new FabricCommandWrapper(commandManager, node));
         }
     }

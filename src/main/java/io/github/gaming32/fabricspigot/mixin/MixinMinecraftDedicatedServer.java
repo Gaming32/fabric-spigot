@@ -2,7 +2,7 @@ package io.github.gaming32.fabricspigot.mixin;
 
 import com.mojang.datafixers.DataFixer;
 import io.github.gaming32.fabricspigot.FabricSpigot;
-import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitServer;
+import io.github.gaming32.fabricspigot.vanillaimpl.MinecraftServerExt;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.net.Proxy;
 
 @Mixin(MinecraftDedicatedServer.class)
-public abstract class MixinMinecraftDedicatedServer extends MinecraftServer implements HasBukkitServer {
+public abstract class MixinMinecraftDedicatedServer extends MinecraftServer implements MinecraftServerExt {
     public MixinMinecraftDedicatedServer(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
         super(serverThread, session, dataPackManager, saveLoader, proxy, dataFixer, apiServices, worldGenerationProgressListenerFactory);
     }

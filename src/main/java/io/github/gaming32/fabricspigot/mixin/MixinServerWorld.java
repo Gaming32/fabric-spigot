@@ -1,7 +1,7 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import io.github.gaming32.fabricspigot.api.FabricWorld;
-import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitWorld;
+import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 @Mixin(ServerWorld.class)
-public class MixinServerWorld implements HasBukkitWorld {
+public class MixinServerWorld implements ServerWorldExt {
     private FabricWorld fabricSpigot$bukkitWorld;
     private LevelStorage.Session fabricSpigot$session;
 

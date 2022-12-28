@@ -3,7 +3,7 @@ package io.github.gaming32.fabricspigot.mixin;
 import io.github.gaming32.fabricspigot.api.FabricServer;
 import io.github.gaming32.fabricspigot.api.command.FabricConsoleCommandSender;
 import io.github.gaming32.fabricspigot.vanillaimpl.CommandOutputExt;
-import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitServer;
+import io.github.gaming32.fabricspigot.vanillaimpl.MinecraftServerExt;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer implements HasBukkitServer, CommandOutputExt {
+public abstract class MixinMinecraftServer implements MinecraftServerExt, CommandOutputExt {
     @Shadow
     @Final
     private Map<RegistryKey<World>, ServerWorld> worlds;
