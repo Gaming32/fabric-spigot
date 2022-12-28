@@ -519,7 +519,20 @@ public class FabricServer implements Server {
 
     @Override
     public boolean dispatchCommand(@NotNull CommandSender sender, @NotNull String commandLine) throws CommandException {
-        throw new NotImplementedYet();
+        Validate.notNull(sender, "Sender cannot be null");
+        Validate.notNull(commandLine, "CommandLine cannot be null");
+
+        if (commandMap.dispatch(sender, commandLine)) {
+            return true;
+        }
+
+        if (sender instanceof Player) {
+            sender.sendMessage("Unknown command. Type \"/help\" for help.");
+        } else {
+            sender.sendMessage("Unknown command. Type \"help\" for help.");
+        }
+
+        return false;
     }
 
     @Override

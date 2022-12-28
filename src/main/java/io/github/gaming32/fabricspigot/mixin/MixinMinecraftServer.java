@@ -1,11 +1,15 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import io.github.gaming32.fabricspigot.api.FabricServer;
+import io.github.gaming32.fabricspigot.api.command.FabricConsoleCommandSender;
+import io.github.gaming32.fabricspigot.vanillaimpl.CommandOutputExt;
 import io.github.gaming32.fabricspigot.vanillaimpl.HasBukkitServer;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer implements HasBukkitServer {
+public abstract class MixinMinecraftServer implements HasBukkitServer, CommandOutputExt {
     @Shadow
     @Final
     private Map<RegistryKey<World>, ServerWorld> worlds;
@@ -65,5 +69,10 @@ public abstract class MixinMinecraftServer implements HasBukkitServer {
         if (getBukkitServer() != null) {
             getBukkitServer().disablePlugins();
         }
+    }
+
+    @Override
+    public CommandSender getBukkitSender(ServerCommandSource commandSource) {
+        return FabricConsoleCommandSender.getInstance();
     }
 }

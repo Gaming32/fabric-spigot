@@ -12,6 +12,9 @@
   "entrypoints": {
     "main": [
       "io.github.gaming32.fabricspigot.FabricSpigot"
+    ],
+    "preLaunch": [
+      "io.github.gaming32.fabricspigot.FabricSpigotPreLaunch"
     ]
   },
   "mixins": [
@@ -23,7 +26,8 @@
       "net/minecraft/class_2561": ["io/github/gaming32/fabricspigot/util/TextStreamable"],
       "net/minecraft/server/MinecraftServer": ["io/github/gaming32/fabricspigot/vanillaimpl/HasBukkitServer"],
       "net/minecraft/class_3218": ["io/github/gaming32/fabricspigot/vanillaimpl/HasBukkitWorld"],
-      "net/minecraft/class_2168": ["io/github/gaming32/fabricspigot/vanillaimpl/BukkitServerCommandSource"]
+      "net/minecraft/class_2168": ["io/github/gaming32/fabricspigot/vanillaimpl/BukkitServerCommandSource"],
+      "net/minecraft/class_2165": ["io/github/gaming32/fabricspigot/vanillaimpl/CommandOutputExt"]
     }
   },
   "depends": {

@@ -1,6 +1,5 @@
 package io.github.gaming32.fabricspigot.mixin;
 
-import io.github.gaming32.fabricspigot.util.NotImplementedYet;
 import io.github.gaming32.fabricspigot.vanillaimpl.BukkitServerCommandSource;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
@@ -15,7 +14,6 @@ public class MixinServerCommandSource implements BukkitServerCommandSource {
 
     @Override
     public CommandSender getBukkitSender() {
-        throw new NotImplementedYet();
-//        return output.getBukkitSender(this);
+        return output.getBukkitSender((ServerCommandSource)(Object)this);
     }
 }

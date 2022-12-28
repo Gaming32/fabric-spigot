@@ -5,11 +5,19 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "CommandNodeAccessor",
+    "MixinCommandBlockBlockEntity_1",
+    "MixinCommandBlockMinecartEntity_CommandExecutor",
+    "MixinCommandOutput",
+    "MixinCommandOutput$Mixin_1",
+    "MixinEntity",
+    "MixinLecternBlockEntity",
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
+    "MixinRconCommandOutput",
     "MixinRecipeManager",
     "MixinServerCommandSource",
     "MixinServerWorld",
+    "MixinSignBlockEntity",
     "MixinText"
   ],
   "client": [
