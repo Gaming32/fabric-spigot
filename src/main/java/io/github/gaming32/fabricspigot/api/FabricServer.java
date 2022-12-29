@@ -3,7 +3,6 @@ package io.github.gaming32.fabricspigot.api;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.gaming32.fabricspigot.FabricSpigot;
@@ -1222,12 +1221,14 @@ public class FabricServer implements Server {
             successfullyRegisteredCommands.add(label);
             if (command instanceof FabricCommandWrapper fabricCommand) {
                 final var node = fabricCommand.fabricCommand;
-                dispatcher.register(
-                    LiteralArgumentBuilder.<ServerCommandSource>literal(label)
-                        .requires(node.getRequirement())
-                        .forward(node.getRedirect(), node.getRedirectModifier(), node.isFork())
-                        .executes(node.getCommand())
+                final LiteralCommandNode<ServerCommandSource> copy = new LiteralCommandNode<>(
+                    label, node.getCommand(), node.getRequirement(),
+                    node.getRedirect(), node.getRedirectModifier(), node.isFork()
                 );
+                for (final var child : node.getChildren()) {
+                    copy.addChild(child);
+                }
+                dispatcher.getRoot().addChild(copy);
             } else {
                 new BukkitCommandWrapper(this, command).register(dispatcher, label);
             }
