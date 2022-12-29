@@ -1189,7 +1189,7 @@ public class FabricServer implements Server {
                 FabricSpigot.LOGGER.warn("Child of root command node {} was not a literal.", command);
                 continue;
             }
-            if (node.getName().equals("help")) continue; // Don't create a /fabric:help, as that would just redirect to our overwrite anyway.
+            if (node.getName().equals("fabric:help")) continue; // Don't create a /fabric:fabric:help
             commandMap.register("fabric", new FabricCommandWrapper(commandManager, node));
         }
     }
@@ -1212,7 +1212,7 @@ public class FabricServer implements Server {
             final String label = entry.getKey();
             final Command command = entry.getValue();
 
-            if (!label.equals("help") && dispatcher.getRoot().getChild(label) != null) {
+            if (dispatcher.getRoot().getChild(label) != null) {
                 if (commandMap.getCommand("fabric:" + label) != command) {
                     FabricSpigot.LOGGER.info("Skipped registering command /{}, as it was already added by Vanilla or a Fabric mod.", label);
                 }

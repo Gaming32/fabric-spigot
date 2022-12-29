@@ -10,6 +10,7 @@
     "MixinCommandOutput",
     "MixinCommandOutput$Mixin_1",
     "MixinEntity",
+    "MixinHelpCommand",
     "MixinLecternBlockEntity",
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
