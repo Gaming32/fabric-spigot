@@ -1,7 +1,7 @@
 package io.github.gaming32.fabricspigot.mixin;
 
+import io.github.gaming32.fabricspigot.ext.CommandOutputExt;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
-import io.github.gaming32.fabricspigot.vanillaimpl.CommandOutputExt;
 import net.minecraft.entity.vehicle.CommandBlockMinecartEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import org.bukkit.command.CommandSender;

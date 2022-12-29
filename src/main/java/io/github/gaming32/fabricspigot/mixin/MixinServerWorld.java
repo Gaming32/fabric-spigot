@@ -1,7 +1,7 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import io.github.gaming32.fabricspigot.api.FabricWorld;
-import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
+import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;

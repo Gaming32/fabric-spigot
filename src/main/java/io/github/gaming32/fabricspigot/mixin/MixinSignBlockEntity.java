@@ -1,7 +1,7 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import io.github.gaming32.fabricspigot.api.command.FabricBlockCommandSender;
-import io.github.gaming32.fabricspigot.vanillaimpl.CommandOutputExt;
+import io.github.gaming32.fabricspigot.ext.CommandOutputExt;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;

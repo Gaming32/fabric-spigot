@@ -2,7 +2,7 @@ package io.github.gaming32.fabricspigot.mixin;
 
 import com.mojang.datafixers.DataFixer;
 import io.github.gaming32.fabricspigot.FabricSpigot;
-import io.github.gaming32.fabricspigot.vanillaimpl.MinecraftServerExt;
+import io.github.gaming32.fabricspigot.ext.MinecraftServerExt;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;

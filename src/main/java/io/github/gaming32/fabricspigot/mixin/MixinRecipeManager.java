@@ -1,7 +1,7 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import com.google.common.collect.ImmutableMap;
-import io.github.gaming32.fabricspigot.features.CraftingManagerExtras;
+import io.github.gaming32.fabricspigot.ext.RecipeManagerExt;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Mixin(RecipeManager.class)
-public class MixinRecipeManager implements CraftingManagerExtras {
+public class MixinRecipeManager implements RecipeManagerExt {
     @Shadow private Map<RecipeType<?>, Map<Identifier, Recipe<?>>> recipes;
 
     @Shadow private Map<Identifier, Recipe<?>> recipesById;

@@ -10,12 +10,12 @@ import io.github.gaming32.fabricspigot.api.command.BukkitCommandWrapper;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandMap;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandWrapper;
 import io.github.gaming32.fabricspigot.api.help.SimpleHelpMap;
-import io.github.gaming32.fabricspigot.features.CraftingManagerExtras;
+import io.github.gaming32.fabricspigot.ext.RecipeManagerExt;
+import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
 import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
 import io.github.gaming32.fabricspigot.util.CommandNodeAccess;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
-import io.github.gaming32.fabricspigot.vanillaimpl.ServerWorldExt;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.boss.BossBarManager;
@@ -588,7 +588,7 @@ public class FabricServer implements Server {
 
     @Override
     public void clearRecipes() {
-        ((CraftingManagerExtras)getHandle().getRecipeManager()).clearRecipes();
+        ((RecipeManagerExt)getHandle().getRecipeManager()).clearRecipes();
     }
 
     @Override
@@ -598,7 +598,7 @@ public class FabricServer implements Server {
 
     @Override
     public boolean removeRecipe(@NotNull NamespacedKey key) {
-        return ((CraftingManagerExtras)getHandle().getRecipeManager()).removeRecipe(Conversion.toIdentifier(key));
+        return ((RecipeManagerExt)getHandle().getRecipeManager()).removeRecipe(Conversion.toIdentifier(key));
     }
 
     @NotNull

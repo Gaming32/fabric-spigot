@@ -11,7 +11,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.gaming32.fabricspigot.api.FabricServer;
-import io.github.gaming32.fabricspigot.vanillaimpl.ServerCommandSourceExt;
+import io.github.gaming32.fabricspigot.ext.ServerCommandSourceExt;
 import net.minecraft.server.command.ServerCommandSource;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;

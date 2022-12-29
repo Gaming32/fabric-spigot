@@ -1,8 +1,8 @@
 package io.github.gaming32.fabricspigot.mixin;
 
 import io.github.gaming32.fabricspigot.api.entity.FabricEntity;
-import io.github.gaming32.fabricspigot.vanillaimpl.CommandOutputExt;
-import io.github.gaming32.fabricspigot.vanillaimpl.EntityExt;
+import io.github.gaming32.fabricspigot.ext.CommandOutputExt;
+import io.github.gaming32.fabricspigot.ext.EntityExt;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.World;
