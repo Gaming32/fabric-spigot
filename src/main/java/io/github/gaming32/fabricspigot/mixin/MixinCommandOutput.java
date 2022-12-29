@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(CommandOutput.class)
 public interface MixinCommandOutput extends CommandOutputExt {
+    @SuppressWarnings("unused")
     @Mixin(targets = "net.minecraft.server.command.CommandOutput$1")
     class Mixin_1 implements CommandOutputExt {
         @Override

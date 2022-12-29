@@ -257,17 +257,15 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     public boolean refreshChunk(int x, int z) {
         final ChunkHolder playerChunk = world.getChunkManager().threadedAnvilChunkStorage.chunkHolders.get(ChunkPos.toLong(x, z));
         if (playerChunk == null) return false;
-        playerChunk.getTickingFuture().thenAccept(either -> {
-            either.left().ifPresent(chunk -> {
-                final List<ServerPlayerEntity> playersInRange = playerChunk.playersWatchingChunkProvider.getPlayersWatchingChunk(playerChunk.getPos(), false);
-                if (playersInRange.isEmpty()) return;
-                final ChunkDataS2CPacket refreshPacket = new ChunkDataS2CPacket(chunk, world.getLightingProvider(), null, null, true);
-                for (final ServerPlayerEntity player : playersInRange) {
-                    if (player.networkHandler == null) continue;
-                    player.networkHandler.sendPacket(refreshPacket);
-                }
-            });
-        });
+        playerChunk.getTickingFuture().thenAccept(either -> either.left().ifPresent(chunk -> {
+            final List<ServerPlayerEntity> playersInRange = playerChunk.playersWatchingChunkProvider.getPlayersWatchingChunk(playerChunk.getPos(), false);
+            if (playersInRange.isEmpty()) return;
+            final ChunkDataS2CPacket refreshPacket = new ChunkDataS2CPacket(chunk, world.getLightingProvider(), null, null, true);
+            for (final ServerPlayerEntity player : playersInRange) {
+                if (player.networkHandler == null) continue;
+                player.networkHandler.sendPacket(refreshPacket);
+            }
+        }));
         return true;
     }
 
@@ -408,7 +406,7 @@ public class FabricWorld extends FabricRegionAccessor implements World {
         final PersistentProjectileEntity arrow;
         if (TippedArrow.class.isAssignableFrom(clazz)) {
             arrow = EntityType.ARROW.create(world);
-            throw new NotImplementedYet("TippedArrow");
+            throw new NotImplementedYet("fromBukkit");
         } else if (SpectralArrow.class.isAssignableFrom(clazz)) {
             arrow = EntityType.SPECTRAL_ARROW.create(world);
         } else if (Trident.class.isAssignableFrom(clazz)) {
@@ -931,6 +929,7 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public double getTemperature(int x, int y, int z) {
         final BlockPos pos = new BlockPos(x, y, z);
         return world.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2).value().getTemperature(pos);

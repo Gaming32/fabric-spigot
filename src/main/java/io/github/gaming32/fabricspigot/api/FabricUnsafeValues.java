@@ -79,15 +79,9 @@ public class FabricUnsafeValues implements UnsafeValues {
             }
 
             Identifier key = key(material);
-            Registries.ITEM.getOrEmpty(key).ifPresent((item) -> {
-                MATERIAL_ITEM.put(material, item);
-            });
-            Registries.BLOCK.getOrEmpty(key).ifPresent((block) -> {
-                MATERIAL_BLOCK.put(material, block);
-            });
-            Registries.FLUID.getOrEmpty(key).ifPresent((fluid) -> {
-                MATERIAL_FLUID.put(material, fluid);
-            });
+            Registries.ITEM.getOrEmpty(key).ifPresent(item -> MATERIAL_ITEM.put(material, item));
+            Registries.BLOCK.getOrEmpty(key).ifPresent(block -> MATERIAL_BLOCK.put(material, block));
+            Registries.FLUID.getOrEmpty(key).ifPresent(fluid -> MATERIAL_FLUID.put(material, fluid));
         }
     }
 

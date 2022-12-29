@@ -86,23 +86,24 @@ public class FabricHumanEntity extends FabricLivingEntity implements HumanEntity
         return perm.addAttachment(plugin, name, value);
     }
 
+    @NotNull
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         return perm.addAttachment(plugin);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
         return perm.addAttachment(plugin, name, value, ticks);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
         return perm.addAttachment(plugin, ticks);
     }
 
     @Override
-    public void removeAttachment(PermissionAttachment attachment) {
+    public void removeAttachment(@NotNull PermissionAttachment attachment) {
         perm.removeAttachment(attachment);
     }
 
@@ -122,6 +123,7 @@ public class FabricHumanEntity extends FabricLivingEntity implements HumanEntity
         perm.recalculatePermissions();
     }
 
+    @NotNull
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return perm.getEffectivePermissions();

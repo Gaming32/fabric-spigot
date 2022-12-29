@@ -596,13 +596,11 @@ public class FabricLivingEntity extends FabricEntity implements LivingEntity {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public double getHealth() {
         return Math.min(Math.max(0, getHandle().getHealth()), getMaxHealth());
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void setHealth(double health) {
         if (health < 0 || health > getMaxHealth()) {
             throw new IllegalArgumentException("Health must be between 0 and " + getMaxHealth() + " (was " + health + ")");

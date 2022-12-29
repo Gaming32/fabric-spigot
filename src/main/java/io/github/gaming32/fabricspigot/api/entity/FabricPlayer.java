@@ -463,6 +463,7 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
         if (location == null) {
             getHandle().setSpawnPoint(null, null, 0f, force, false);
         } else {
+            //noinspection DataFlowIssue
             getHandle().setSpawnPoint(
                 ((FabricWorld)location.getWorld()).getHandle().getRegistryKey(),
                 new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()),
@@ -503,14 +504,13 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
             case 6 -> "bell";
             case 7 -> "guitar";
             case 8 -> "chime";
-            case 9 -> "xylophone";
+            case 9, 16 -> "xylophone";
             case 10 -> "iron_xylophone";
             case 11 -> "cow_bell";
             case 12 -> "didgeridoo";
             case 13 -> "bit";
             case 14 -> "banjo";
             case 15 -> "pling";
-            case 16 -> "xylophone";
             default -> null;
         });
     }
@@ -846,22 +846,22 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
     }
 
     @Override
-    public void setResourcePack(@NotNull String url, @Nullable byte[] hash) {
+    public void setResourcePack(@NotNull String url, byte @Nullable [] hash) {
         throw new NotImplementedYet();
     }
 
     @Override
-    public void setResourcePack(@NotNull String url, @Nullable byte[] hash, boolean force) {
+    public void setResourcePack(@NotNull String url, byte @Nullable [] hash, boolean force) {
         throw new NotImplementedYet();
     }
 
     @Override
-    public void setResourcePack(@NotNull String url, @Nullable byte[] hash, @Nullable String prompt) {
+    public void setResourcePack(@NotNull String url, byte @Nullable [] hash, @Nullable String prompt) {
         throw new NotImplementedYet();
     }
 
     @Override
-    public void setResourcePack(@NotNull String url, @Nullable byte[] hash, @Nullable String prompt, boolean force) {
+    public void setResourcePack(@NotNull String url, byte @Nullable [] hash, @Nullable String prompt, boolean force) {
         throw new NotImplementedYet();
     }
 
@@ -1204,7 +1204,7 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
     }
 
     @Override
-    public void sendPluginMessage(@NotNull Plugin source, @NotNull String channel, @NotNull byte[] message) {
+    public void sendPluginMessage(@NotNull Plugin source, @NotNull String channel, byte @NotNull [] message) {
         throw new NotImplementedYet();
     }
 

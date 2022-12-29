@@ -818,28 +818,30 @@ public abstract class FabricEntity implements Entity {
         return getPermissibleBase().hasPermission(perm);
     }
 
+    @NotNull
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value) {
         return getPermissibleBase().addAttachment(plugin, name, value);
     }
 
+    @NotNull
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         return getPermissibleBase().addAttachment(plugin);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
         return getPermissibleBase().addAttachment(plugin, name, value, ticks);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
         return getPermissibleBase().addAttachment(plugin, ticks);
     }
 
     @Override
-    public void removeAttachment(PermissionAttachment attachment) {
+    public void removeAttachment(@NotNull PermissionAttachment attachment) {
         getPermissibleBase().removeAttachment(attachment);
     }
 
@@ -848,6 +850,7 @@ public abstract class FabricEntity implements Entity {
         getPermissibleBase().recalculatePermissions();
     }
 
+    @NotNull
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return getPermissibleBase().getEffectivePermissions();
@@ -875,7 +878,7 @@ public abstract class FabricEntity implements Entity {
         if (name != null && name.length() > 256) {
             name = name.substring(0, 256);
         }
-        throw new NotImplementedYet("String -> Text");
+        getHandle().setCustomName(ChatMessageConversion.fromStringOrNull(name));
     }
 
     @NotNull

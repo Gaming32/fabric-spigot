@@ -48,6 +48,7 @@ public class MixinLecternBlockEntity implements CommandOutput, CommandOutputExt 
 
     @Override
     public CommandSender getBukkitSender(ServerCommandSource commandSource) {
+        //noinspection DataFlowIssue
         return commandSource.getEntity() != null ? commandSource.getEntity().getBukkitSender(commandSource) : new FabricBlockCommandSender(commandSource, (SignBlockEntity)(Object)this);
     }
 }
