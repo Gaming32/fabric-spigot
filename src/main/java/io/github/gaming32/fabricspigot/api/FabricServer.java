@@ -35,6 +35,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.*;
 import org.bukkit.command.*;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
@@ -72,7 +73,15 @@ import java.util.logging.Logger;
 
 public class FabricServer implements Server {
     private final Spigot spigot = new Spigot() {
+        private final YamlConfiguration config = new YamlConfiguration();
+
+        @NotNull
+        @Override
+        public YamlConfiguration getConfig() {
+            return config;
+        }
     };
+
     private final FabricCommandMap commandMap = new FabricCommandMap(this);
     private final SimpleHelpMap helpMap = new SimpleHelpMap(this);
     private final Set<String> successfullyRegisteredCommands = new HashSet<>();

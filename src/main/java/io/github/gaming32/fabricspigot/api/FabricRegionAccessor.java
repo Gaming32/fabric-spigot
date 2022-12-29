@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -41,6 +42,10 @@ public abstract class FabricRegionAccessor implements RegionAccessor {
     public abstract Iterable<Entity> getNMSEntities();
 
     public abstract void addEntityToWorld(Entity entity, CreatureSpawnEvent.SpawnReason reason);
+
+    public boolean isNormalWorld() {
+        return getHandle() instanceof ServerWorld;
+    }
 
     @NotNull
     @Override
@@ -201,7 +206,10 @@ public abstract class FabricRegionAccessor implements RegionAccessor {
     public List<org.bukkit.entity.Entity> getEntities() {
         final List<org.bukkit.entity.Entity> result = new ArrayList<>();
         getNMSEntities().forEach(entity -> {
-            throw new NotImplementedYet();
+            final org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+            if (bukkitEntity != null && (!isNormalWorld() || bukkitEntity.isValid())) {
+                result.add(bukkitEntity);
+            }
         });
         return result;
     }
@@ -211,7 +219,11 @@ public abstract class FabricRegionAccessor implements RegionAccessor {
     public List<LivingEntity> getLivingEntities() {
         final List<LivingEntity> result = new ArrayList<>();
         getNMSEntities().forEach(entity -> {
-            throw new NotImplementedYet();
+            final org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+
+            if (bukkitEntity instanceof LivingEntity living && (!isNormalWorld() || bukkitEntity.isValid())) {
+                result.add(living);
+            }
         });
         return result;
     }

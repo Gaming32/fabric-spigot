@@ -1450,7 +1450,7 @@ public class FabricWorld extends FabricRegionAccessor implements World {
 
     @Override
     public Iterable<net.minecraft.entity.Entity> getNMSEntities() {
-        throw new NotImplementedYet();
+        return getHandle().getEntityLookup().iterate();
     }
 
     @Override
