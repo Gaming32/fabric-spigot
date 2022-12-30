@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements MinecraftServerExt, CommandOutputExt {
@@ -28,6 +29,7 @@ public abstract class MixinMinecraftServer implements MinecraftServerExt, Comman
     @Final
     private Map<RegistryKey<World>, ServerWorld> worlds;
     @Shadow @Final protected WorldSaveHandler saveHandler;
+    @Shadow private int ticks;
     private FabricServer fabricSpigot$bukkitServer;
 
     @Override
@@ -71,6 +73,11 @@ public abstract class MixinMinecraftServer implements MinecraftServerExt, Comman
         if (getBukkitServer() != null) {
             getBukkitServer().disablePlugins();
         }
+    }
+
+    @Inject(method = "tickWorlds", at = @At("HEAD"))
+    private void runScheduler(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+        getBukkitServer().getScheduler().mainThreadHeartbeat(ticks);
     }
 
     @Override

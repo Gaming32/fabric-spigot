@@ -11,6 +11,7 @@ import io.github.gaming32.fabricspigot.api.command.FabricCommandMap;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandWrapper;
 import io.github.gaming32.fabricspigot.api.command.FabricConsoleCommandSender;
 import io.github.gaming32.fabricspigot.api.help.SimpleHelpMap;
+import io.github.gaming32.fabricspigot.api.scheduler.FabricScheduler;
 import io.github.gaming32.fabricspigot.api.scoreboard.FabricScoreboardManager;
 import io.github.gaming32.fabricspigot.ext.EntityExt;
 import io.github.gaming32.fabricspigot.ext.RecipeManagerExt;
@@ -60,7 +61,6 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.profile.PlayerProfile;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
@@ -88,6 +88,7 @@ public class FabricServer implements Server {
         }
     };
 
+    private final FabricScheduler scheduler = new FabricScheduler();
     private final FabricCommandMap commandMap = new FabricCommandMap(this);
     private final SimpleHelpMap helpMap = new SimpleHelpMap(this);
     private final Set<String> successfullyRegisteredCommands = new HashSet<>();
@@ -385,8 +386,8 @@ public class FabricServer implements Server {
 
     @NotNull
     @Override
-    public BukkitScheduler getScheduler() {
-        throw new NotImplementedYet();
+    public FabricScheduler getScheduler() {
+        return scheduler;
     }
 
     @NotNull
