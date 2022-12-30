@@ -15,6 +15,9 @@
     ],
     "preLaunch": [
       "io.github.gaming32.fabricspigot.FabricSpigotPreLaunch"
+    ],
+    "mm:early_risers": [
+      "io.github.gaming32.fabricspigot.mm.FabricSpigotEarlyRiser"
     ]
   },
   "mixins": [

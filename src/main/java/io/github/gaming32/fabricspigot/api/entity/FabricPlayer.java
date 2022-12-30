@@ -850,7 +850,7 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public boolean canSee(@NotNull Player player) {
-        throw new NotImplementedYet();
+        return true; // TODO: Implement properly
     }
 
     @Override
