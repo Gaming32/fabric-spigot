@@ -24,6 +24,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.entity.boss.CommandBossBar;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -355,13 +356,35 @@ public class FabricServer implements Server {
     @Nullable
     @Override
     public Player getPlayer(@NotNull String name) {
-        throw new NotImplementedYet();
+        Validate.notNull(name, "Name cannot be null");
+
+        Player found = getPlayerExact(name);
+        if (found != null) {
+            return found;
+        }
+
+        final String lowerName = name.toLowerCase(Locale.ENGLISH);
+        int delta = Integer.MAX_VALUE;
+        for (final Player player : getOnlinePlayers()) {
+            if (player.getName().toLowerCase(Locale.ENGLISH).startsWith(lowerName)) {
+                final int curDelta = Math.abs(player.getName().length() - lowerName.length());
+                if (curDelta < delta) {
+                    found = player;
+                    delta = curDelta;
+                }
+                if (curDelta == 0) break;
+            }
+        }
+        return found;
     }
 
     @Nullable
     @Override
     public Player getPlayerExact(@NotNull String name) {
-        throw new NotImplementedYet();
+        Validate.notNull(name, "Name cannot be null");
+
+        final PlayerEntity player = getHandle().getPlayerManager().getPlayer(name);
+        return player != null ? (Player)player.getBukkitEntity() : null;
     }
 
     @NotNull

@@ -15,9 +15,7 @@ import io.github.gaming32.fabricspigot.util.NotImplementedYet;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlayerSpawnPositionS2CPacket;
+import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -992,12 +990,18 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void sendTitle(@Nullable String title, @Nullable String subtitle, int fadeIn, int stay, int fadeOut) {
-        throw new NotImplementedYet();
+        getHandle().networkHandler.sendPacket(new TitleFadeS2CPacket(fadeIn, stay, fadeOut));
+        if (title != null) {
+            getHandle().networkHandler.sendPacket(new TitleS2CPacket(ChatMessageConversion.fromString(title)[0]));
+        }
+        if (subtitle != null) {
+            getHandle().networkHandler.sendPacket(new SubtitleS2CPacket(ChatMessageConversion.fromString(subtitle)[0]));
+        }
     }
 
     @Override
     public void sendTitle(@Nullable String title, @Nullable String subtitle) {
-        throw new NotImplementedYet();
+        sendTitle(title, subtitle, 10, 70, 20);
     }
 
     @Override

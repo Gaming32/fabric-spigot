@@ -98,7 +98,7 @@ public abstract class FabricEntity implements Entity {
                     else if (entity instanceof PigEntity) { /*return new CraftPig(server, (EntityPig) entity);*/ throw new NotImplementedYet("FabricPig"); }
                     else if (entity instanceof TameableEntity) {
                         if (entity instanceof WolfEntity) { /*return new CraftWolf(server, (EntityWolf) entity);*/ throw new NotImplementedYet("FabricWolf"); }
-                        else if (entity instanceof CatEntity) { /*return new CraftCat(server, (EntityCat) entity);*/ throw new NotImplementedYet("FabricCat"); }
+                        else if (entity instanceof CatEntity) { return new FabricCat(server, (CatEntity) entity); }
                         else if (entity instanceof ParrotEntity) { /*return new CraftParrot(server, (EntityParrot) entity);*/ throw new NotImplementedYet("FabricParrot"); }
                     }
                     else if (entity instanceof SheepEntity) { /*return new CraftSheep(server, (EntitySheep) entity);*/ throw new NotImplementedYet("FabricSheep"); }
@@ -125,7 +125,7 @@ public abstract class FabricEntity implements Entity {
                     else if (entity instanceof AxolotlEntity) { /*return new CraftAxolotl(server, (Axolotl) entity);*/ throw new NotImplementedYet("FabricAxolotl"); }
                     else if (entity instanceof GoatEntity) { /*return new CraftGoat(server, (Goat) entity);*/ throw new NotImplementedYet("FabricGoat"); }
                     else if (entity instanceof FrogEntity) { /*return new CraftFrog(server, (Frog) entity);*/ throw new NotImplementedYet("FabricFrog"); }
-                    else  { /*return new CraftAnimals(server, (EntityAnimal) entity);*/ throw new NotImplementedYet("FabricAnimals"); }
+                    else  { return new FabricAnimals(server, (AnimalEntity) entity); }
                 }
                 // Monsters
                 else if (entity instanceof HostileEntity) {
