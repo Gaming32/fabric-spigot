@@ -677,4 +677,9 @@ public class FabricLivingEntity extends FabricEntity implements LivingEntity {
     public double getEyeHeight(boolean ignorePose) {
         throw new NotImplementedYet();
     }
+
+    @Override
+    public String toString() {
+        return "FabricLivingEntity{" + "id=" + getEntityId() + '}';
+    }
 }

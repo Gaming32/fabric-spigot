@@ -98,6 +98,7 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
         }
     };
     private final ConversationTracker conversationTracker = new ConversationTracker();
+    private int hash;
 
     public FabricPlayer(FabricServer server, ServerPlayerEntity entity) {
         super(server, entity);
@@ -1261,5 +1262,31 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
     @Override
     public Set<String> getListeningPluginChannels() {
         throw new NotImplementedYet();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OfflinePlayer other)) {
+            return false;
+        }
+
+        if (!Objects.equals(getUniqueId(), other.getUniqueId())) {
+            return false;
+        }
+
+        return !(other instanceof FabricPlayer player) || getEntityId() == player.getEntityId();
+    }
+
+    @Override
+    public int hashCode() {
+        if (hash == 0 || hash == 485) {
+            hash = 97 * 5 + Objects.hashCode(getUniqueId());
+        }
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "FabricPlayer{" + "name=" + getName() + '}';
     }
 }

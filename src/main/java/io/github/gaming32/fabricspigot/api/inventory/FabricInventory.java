@@ -441,4 +441,9 @@ public class FabricInventory implements Inventory {
         throw new NotImplementedYet("Inventory.getLocation");
 //        return inventory.getLocation();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FabricInventory other && other.inventory.equals(inventory);
+    }
 }

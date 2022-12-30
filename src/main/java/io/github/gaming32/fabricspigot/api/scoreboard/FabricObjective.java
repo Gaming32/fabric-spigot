@@ -9,6 +9,8 @@ import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 final class FabricObjective extends FabricScoreboardComponent implements Objective {
     private final ScoreboardObjective objective;
     private final FabricCriteria criteria;
@@ -144,5 +146,24 @@ final class FabricObjective extends FabricScoreboardComponent implements Objecti
             throw new IllegalStateException("Unregistered scoreboard component");
         }
         return getScoreboard();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FabricObjective other = (FabricObjective)obj;
+        return Objects.equals(objective, other.objective);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(objective);
+        return hash;
     }
 }

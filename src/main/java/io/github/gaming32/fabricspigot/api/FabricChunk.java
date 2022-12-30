@@ -321,6 +321,11 @@ public class FabricChunk implements Chunk {
 //        return getHandle()
     }
 
+    @Override
+    public String toString() {
+        return "FabricChunk{" + "x=" + getX() + "z=" + getZ() + '}';
+    }
+
     static void validateChunkCoordinates(int minY, int maxY, int x, int y, int z) {
         Preconditions.checkArgument(0 <= x && x <= 15, "x out of range (expected 0-15, got %s)", x);
         Preconditions.checkArgument(minY <= y && y <= maxY, "y out of range (expected %s-%s, got %s)", minY, maxY, y);

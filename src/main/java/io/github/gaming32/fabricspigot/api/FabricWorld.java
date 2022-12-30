@@ -1579,4 +1579,27 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     public NamespacedKey getKey() {
         return Conversion.toNamespacedKey(world.getRegistryKey().getValue());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final FabricWorld other = (FabricWorld)obj;
+        return getUID().equals(other.getUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return getUID().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "FabricWorld{name=" + getName() + '}';
+    }
 }

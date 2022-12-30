@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @SerializableAs("Player")
@@ -289,5 +290,26 @@ public class FabricOfflinePlayer implements OfflinePlayer, ConfigurationSerializ
         }
 
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OfflinePlayer other)) {
+            return false;
+        }
+
+        return Objects.equals(getUniqueId(), other.getUniqueId());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(getUniqueId());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[UUID=" + profile.getId() + "]";
     }
 }

@@ -1298,4 +1298,9 @@ public class FabricServer implements Server {
         resendCommands();
         pluginManager.disablePlugins();
     }
+
+    @Override
+    public String toString() {
+        return "CraftServer{serverName=" + getName() + ",serverVersion=" + FabricSpigot.getModVersion() + ",minecraftVersion=" + SharedConstants.getGameVersion().getName() + '}';
+    }
 }

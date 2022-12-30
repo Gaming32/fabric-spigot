@@ -8,15 +8,7 @@ import org.bukkit.scoreboard.Score;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class FabricScore implements Score {
-    private final String entry;
-    private final FabricObjective objective;
-
-    FabricScore(FabricObjective objective, String entry) {
-        this.objective = objective;
-        this.entry = entry;
-    }
-
+record FabricScore(FabricObjective objective, String entry) implements Score {
     @NotNull
     @Override
     @SuppressWarnings("deprecation")

@@ -513,4 +513,16 @@ public class FabricBlock implements Block {
     public boolean canPlace(@NotNull BlockData data) {
         throw new NotImplementedYet();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof FabricBlock other)) {
+            return false;
+        }
+
+        return position.equals(other.position) && getWorld().equals(other.getWorld());
+    }
 }

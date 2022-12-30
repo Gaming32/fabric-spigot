@@ -568,4 +568,9 @@ public class FabricHumanEntity extends FabricLivingEntity implements HumanEntity
         final FireworkRocketEntity fireworks = new FireworkRocketEntity(getHandle().world, FabricItemStack.toVanilla(fireworkItemStack), getHandle());
         throw new NotImplementedYet("addFreshEntity");
     }
+
+    @Override
+    public String toString() {
+        return "FabricHumanEntity{" + "id=" + getEntityId() + "name=" + getName() + '}';
+    }
 }

@@ -908,4 +908,28 @@ public abstract class FabricEntity implements Entity {
     public Spigot spigot() {
         return spigot;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FabricEntity other = (FabricEntity)obj;
+        return getEntityId() == other.getEntityId();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + getEntityId();
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "FabricEntity{" + "id=" + getEntityId() + '}';
+    }
 }

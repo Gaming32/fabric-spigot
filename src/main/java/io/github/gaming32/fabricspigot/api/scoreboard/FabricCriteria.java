@@ -69,4 +69,12 @@ public final class FabricCriteria implements Criteria {
             .map(FabricCriteria::new)
             .orElseGet(() -> new FabricCriteria(name));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FabricCriteria other)) {
+            return false;
+        }
+        return other.bukkitName.equals(bukkitName);
+    }
 }
