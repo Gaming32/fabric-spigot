@@ -9,31 +9,29 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public final class MmMapping {
-    private static final String ENVIRONMENT = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
+    public static final String ENVIRONMENT = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
 
-    private final String intermediary, hashed, yarn;
-    private final Set<String> mappings;
+    private final String namespaced;
 
     public MmMapping(String intermediary, String hashed, String yarn) {
-        this.intermediary = intermediary;
-        this.hashed = hashed;
-        this.yarn = yarn;
-        mappings = Set.of(intermediary, hashed, yarn);
+        namespaced = switch (ENVIRONMENT) {
+            case "intermediary" -> intermediary;
+            case "hashed" -> hashed;
+            case "named" -> yarn;
+            default -> throw new UnsupportedOperationException("Unsupported mappings environment: " + ENVIRONMENT);
+        };
     }
 
     public void registerClassTransformer(Consumer<ClassNode> consumer) {
-        for (final String mapping : mappings) {
-            ClassTinkerers.addTransformation("net/minecraft/" + mapping, consumer);
-        }
+        ClassTinkerers.addTransformation("net/minecraft/" + namespaced, consumer);
     }
 
     public void findMethod(ClassNode clazz, Consumer<MethodNode> consumer) {
         for (final MethodNode node : clazz.methods) {
-            if (matches(node.name)) {
+            if (node.name.equals(namespaced)) {
                 consumer.accept(node);
             }
         }
@@ -45,16 +43,11 @@ public final class MmMapping {
     }
 
     public boolean matches(String name) {
-        return mappings.contains(name);
+        return name.equals(namespaced);
     }
 
     public Type type() {
-        return Type.getObjectType("net/minecraft/" + switch (ENVIRONMENT) {
-            case "intermediary" -> intermediary;
-            case "hashed" -> hashed;
-            case "named" -> yarn;
-            default -> throw new UnsupportedOperationException("Unsupported mappings environment: " + ENVIRONMENT);
-        });
+        return Type.getObjectType("net/minecraft/" + namespaced);
     }
 
     public static ListIterator<AbstractInsnNode> findMethodInsn(ListIterator<AbstractInsnNode> it, MmMapping owner, MmMapping method) {

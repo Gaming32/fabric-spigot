@@ -1,6 +1,6 @@
 package io.github.gaming32.fabricspigot.mm;
 
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings("SpellCheckingInspection") // Hashed go brrr
 public final class MmMappings {
     public static final class PlayerManager {
         public static final MmMapping
