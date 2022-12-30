@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
 import io.github.gaming32.fabricspigot.api.FabricOfflinePlayer;
 import io.github.gaming32.fabricspigot.api.FabricServer;
+import io.github.gaming32.fabricspigot.api.FabricSound;
 import io.github.gaming32.fabricspigot.api.FabricWorld;
 import io.github.gaming32.fabricspigot.api.conversations.ConversationTracker;
 import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
@@ -15,13 +16,17 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnPositionS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -576,7 +581,15 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory category, float volume, float pitch) {
-        throw new NotImplementedYet();
+        //noinspection ConstantValue
+        if (location == null || sound == null || category == null || getHandle().networkHandler == null) return;
+
+        final PlaySoundS2CPacket packet = new PlaySoundS2CPacket(
+            Registries.SOUND_EVENT.getEntry(FabricSound.getSoundEffect(sound)),
+            net.minecraft.sound.SoundCategory.valueOf(category.name()),
+            location.getX(), location.getY(), location.getZ(),
+            volume, pitch, getHandle().getRandom().nextLong()
+        );
     }
 
     @Override
@@ -586,7 +599,7 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void playSound(@NotNull Location location, @NotNull Sound sound, float volume, float pitch) {
-        throw new NotImplementedYet();
+        playSound(location, sound, SoundCategory.MASTER, volume, pitch);
     }
 
     @Override
@@ -923,7 +936,16 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void setScoreboard(@NotNull Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
-        throw new NotImplementedYet();
+        Validate.notNull(scoreboard, "Scoreboard cannot be null");
+        final ServerPlayNetworkHandler playerConnection = getHandle().networkHandler;
+        if (playerConnection == null) {
+            throw new IllegalStateException("Cannot set scoreboard yet");
+        }
+        if (!playerConnection.connection.isOpen()) { // TODO: player.joining
+            throw new IllegalStateException("Cannot set scoreboard for invalid FabricPlayer");
+        }
+        assert server.getScoreboardManager() != null;
+        server.getScoreboardManager().setPlayerBoard(this, scoreboard);
     }
 
     @Nullable

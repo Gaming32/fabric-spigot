@@ -62,7 +62,6 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scoreboard.Criteria;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.StringUtil;
@@ -965,7 +964,7 @@ public class FabricServer implements Server {
 
     @Nullable
     @Override
-    public ScoreboardManager getScoreboardManager() {
+    public FabricScoreboardManager getScoreboardManager() {
         return scoreboardManager;
     }
 

@@ -18,6 +18,10 @@ public final class FabricScoreboard implements Scoreboard {
         this.board = board;
     }
 
+    public net.minecraft.scoreboard.Scoreboard getHandle() {
+        return board;
+    }
+
     @NotNull
     @Override
     public FabricObjective registerNewObjective(@NotNull String name, @NotNull String criteria) throws IllegalArgumentException {

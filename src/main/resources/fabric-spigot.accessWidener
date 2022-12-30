@@ -52,3 +52,4 @@ accessible	method	net/minecraft/server/world/ServerEntityManager	readIfFresh	(J)
 accessible	field	net/minecraft/world/storage/EntityChunkDataAccess	taskExecutor	Lnet/minecraft/util/thread/TaskExecutor;
 accessible	field	net/minecraft/world/ChunkSerializer	CODEC	Lcom/mojang/serialization/Codec;
 accessible	field	net/minecraft/world/chunk/Chunk	heightmaps	Ljava/util/Map;
+accessible	method	net/minecraft/server/PlayerManager	sendScoreboard	(Lnet/minecraft/scoreboard/ServerScoreboard;Lnet/minecraft/server/network/ServerPlayerEntity;)V

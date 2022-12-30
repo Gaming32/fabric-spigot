@@ -181,17 +181,17 @@ public abstract class FabricEntity implements Entity {
                 }
                 else if (entity instanceof GolemEntity) {
                     if (entity instanceof SnowGolemEntity) { /*return new CraftSnowman(server, (EntitySnowman) entity);*/ throw new NotImplementedYet("FabricSnowman"); }
-                    else if (entity instanceof IronGolemEntity) { /*return new CraftIronGolem(server, (EntityIronGolem) entity);*/ throw new NotImplementedYet("FabricIronGolem"); }
+                    else if (entity instanceof IronGolemEntity) { return new FabricIronGolem(server, (IronGolemEntity) entity); }
                     else if (entity instanceof ShulkerEntity) { /*return new CraftShulker(server, (EntityShulker) entity);*/ throw new NotImplementedYet("FabricShulker"); }
-                    else { /*return new CraftGolem(server, (EntityGolem) entity);*/ throw new NotImplementedYet("FabricGolem"); }
+                    else { return new FabricGolem(server, (GolemEntity) entity); }
                 }
                 else if (entity instanceof MerchantEntity) {
-                    if (entity instanceof VillagerEntity) { /*return new CraftVillager(server, (EntityVillager) entity);*/ throw new NotImplementedYet("FabricVillager"); }
-                    else if (entity instanceof WanderingTraderEntity) { /*return new CraftWanderingTrader(server, (EntityVillagerTrader) entity);*/ throw new NotImplementedYet("FabricWanderingTrader"); }
-                    else { /*return new CraftAbstractVillager(server, (EntityVillagerAbstract) entity);*/ throw new NotImplementedYet("FabricAbstractVillager"); }
+                    if (entity instanceof VillagerEntity) { return new FabricVillager(server, (VillagerEntity) entity); }
+                    else if (entity instanceof WanderingTraderEntity) { return new FabricWanderingTrader(server, (WanderingTraderEntity) entity); }
+                    else { return new FabricAbstractVillager(server, (MerchantEntity) entity); }
                 }
                 else if (entity instanceof AllayEntity) { /*return new CraftAllay(server, (Allay) entity);*/ throw new NotImplementedYet("FabricAllay"); }
-                else { /*return new CraftCreature(server, (EntityCreature) entity);*/ throw new NotImplementedYet("FabricCreature"); }
+                else { return new FabricCreature(server, (PathAwareEntity) entity); }
             }
             // Slimes are a special (and broken) case
             else if (entity instanceof SlimeEntity) {
@@ -247,7 +247,7 @@ public abstract class FabricEntity implements Entity {
         else if (entity instanceof EyeOfEnderEntity) { /*return new CraftEnderSignal(server, (EntityEnderSignal) entity);*/ throw new NotImplementedYet("FabricEnderSignal"); }
         else if (entity instanceof EndCrystalEntity) { /*return new CraftEnderCrystal(server, (EntityEnderCrystal) entity);*/ throw new NotImplementedYet("FabricEnderCrystal"); }
         else if (entity instanceof FishingBobberEntity) { /*return new CraftFishHook(server, (EntityFishingHook) entity);*/ throw new NotImplementedYet("FabricFishHook"); }
-        else if (entity instanceof ItemEntity) { /*return new CraftItem(server, (EntityItem) entity);*/ throw new NotImplementedYet("FabricItem"); }
+        else if (entity instanceof ItemEntity) { return new FabricItem(server, (ItemEntity) entity); }
         else if (entity instanceof LightningEntity) { /*return new CraftLightningStrike(server, (EntityLightning) entity);*/ throw new NotImplementedYet("FabricLightningStrike"); }
         else if (entity instanceof AbstractMinecartEntity) {
             if (entity instanceof FurnaceMinecartEntity) { /*return new CraftMinecartFurnace(server, (EntityMinecartFurnace) entity);*/ throw new NotImplementedYet("FabricMinecartFurnace"); }
