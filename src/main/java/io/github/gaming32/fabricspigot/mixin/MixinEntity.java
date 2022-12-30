@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Entity.class)
 public class MixinEntity implements CommandOutputExt, EntityExt {
     @Shadow public World world;
+    @Shadow private float yaw;
     private FabricEntity fabricSpigot$bukkitEntity;
 
     @Override
@@ -27,5 +28,10 @@ public class MixinEntity implements CommandOutputExt, EntityExt {
             fabricSpigot$bukkitEntity = FabricEntity.getEntity(world.getServer().getBukkitServer(), (Entity)(Object)this);
         }
         return fabricSpigot$bukkitEntity;
+    }
+
+    @Override
+    public float getBukkitYaw() {
+        return yaw;
     }
 }

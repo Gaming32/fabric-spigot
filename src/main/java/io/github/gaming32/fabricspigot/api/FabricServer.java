@@ -9,7 +9,10 @@ import io.github.gaming32.fabricspigot.FabricSpigot;
 import io.github.gaming32.fabricspigot.api.command.BukkitCommandWrapper;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandMap;
 import io.github.gaming32.fabricspigot.api.command.FabricCommandWrapper;
+import io.github.gaming32.fabricspigot.api.command.FabricConsoleCommandSender;
 import io.github.gaming32.fabricspigot.api.help.SimpleHelpMap;
+import io.github.gaming32.fabricspigot.api.scoreboard.FabricScoreboardManager;
+import io.github.gaming32.fabricspigot.ext.EntityExt;
 import io.github.gaming32.fabricspigot.ext.RecipeManagerExt;
 import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
 import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
@@ -36,11 +39,13 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.*;
 import org.bukkit.command.*;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChatTabCompleteEvent;
+import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.generator.ChunkGenerator;
@@ -48,6 +53,7 @@ import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.*;
 import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapView;
+import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -88,10 +94,15 @@ public class FabricServer implements Server {
     private final SimplePluginManager pluginManager = new SimplePluginManager(this, commandMap);
     private final Map<String, World> worlds = new LinkedHashMap<>();
     private final Map<Class<?>, Registry<?>> registries = new HashMap<>();
+    private FabricScoreboardManager scoreboardManager;
     private boolean commandSyncReady;
     private List<? extends Player> onlinePlayers;
     private Integer overrideSpawnProtection;
     private MinecraftServer server;
+
+    static {
+        ConfigurationSerialization.registerClass(FabricOfflinePlayer.class);
+    }
 
     public MinecraftServer getHandle() {
         if (server == null) {
@@ -111,9 +122,7 @@ public class FabricServer implements Server {
             //noinspection StaticPseudoFunctionalStyleMethod
             onlinePlayers = Collections.unmodifiableList(Lists.transform(
                 server.getPlayerManager().getPlayerList(),
-                player -> {
-                    throw new NotImplementedYet();
-                }
+                player -> (Player)((EntityExt)player).getBukkitEntity()
             ));
         }
     }
@@ -364,7 +373,8 @@ public class FabricServer implements Server {
     @Nullable
     @Override
     public Player getPlayer(@NotNull UUID id) {
-        throw new NotImplementedYet();
+        final ServerPlayerEntity player = getHandle().getPlayerManager().getPlayer(id);
+        return player != null ? (Player)((EntityExt)player).getBukkitEntity() : null;
     }
 
     @NotNull
@@ -658,7 +668,27 @@ public class FabricServer implements Server {
 
     @Override
     public int broadcast(@NotNull String message, @NotNull String permission) {
-        throw new NotImplementedYet();
+        final Set<CommandSender> recipients = new HashSet<>();
+        for (final Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
+            if (permissible instanceof CommandSender sender && permissible.hasPermission(permission)) {
+                recipients.add(sender);
+            }
+        }
+
+        final BroadcastMessageEvent event = new BroadcastMessageEvent(!Bukkit.isPrimaryThread(), message, recipients);
+        getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            return 0;
+        }
+
+        message = event.getMessage();
+
+        for (final CommandSender recipient : recipients) {
+            recipient.sendMessage(message);
+        }
+
+        return recipients.size();
     }
 
     @NotNull
@@ -741,7 +771,7 @@ public class FabricServer implements Server {
     @NotNull
     @Override
     public ConsoleCommandSender getConsoleSender() {
-        throw new NotImplementedYet();
+        return FabricConsoleCommandSender.getInstance();
     }
 
     @NotNull
@@ -935,7 +965,11 @@ public class FabricServer implements Server {
     @Nullable
     @Override
     public ScoreboardManager getScoreboardManager() {
-        throw new NotImplementedYet();
+        return scoreboardManager;
+    }
+
+    public void setScoreboardManager(FabricScoreboardManager scoreboardManager) {
+        this.scoreboardManager = scoreboardManager;
     }
 
     @NotNull

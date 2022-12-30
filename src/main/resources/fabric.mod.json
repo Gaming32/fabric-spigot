@@ -28,7 +28,10 @@
       "net/minecraft/class_3218": ["io/github/gaming32/fabricspigot/ext/ServerWorldExt"],
       "net/minecraft/class_2168": ["io/github/gaming32/fabricspigot/ext/ServerCommandSourceExt"],
       "net/minecraft/class_2165": ["io/github/gaming32/fabricspigot/ext/CommandOutputExt"],
-      "net/minecraft/class_1297": ["io/github/gaming32/fabricspigot/ext/EntityExt"]
+      "net/minecraft/class_1297": ["io/github/gaming32/fabricspigot/ext/EntityExt"],
+      "net/minecraft/class_1263": ["io/github/gaming32/fabricspigot/ext/InventoryExt"],
+      "net/minecraft/class_1936": ["io/github/gaming32/fabricspigot/ext/WorldAccessExt"],
+      "net/minecraft/class_2818": ["io/github/gaming32/fabricspigot/ext/WorldChunkExt"]
     }
   },
   "depends": {

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import io.github.gaming32.fabricspigot.api.FabricServer;
 import io.github.gaming32.fabricspigot.api.FabricUnsafeValues;
+import io.github.gaming32.fabricspigot.api.inventory.FabricInventoryPlayer;
 import io.github.gaming32.fabricspigot.api.inventory.FabricItemStack;
 import io.github.gaming32.fabricspigot.ext.EntityExt;
 import io.github.gaming32.fabricspigot.util.Conversion;
@@ -42,11 +43,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class FabricHumanEntity extends FabricLivingEntity implements HumanEntity {
+    private FabricInventoryPlayer inventory;
     protected final PermissibleBase perm = new PermissibleBase(this);
     private boolean op;
 
     public FabricHumanEntity(FabricServer server, PlayerEntity entity) {
         super(server, entity);
+        inventory = new FabricInventoryPlayer(entity.getInventory());
     }
 
     @Override
@@ -138,7 +141,7 @@ public class FabricHumanEntity extends FabricLivingEntity implements HumanEntity
     @NotNull
     @Override
     public PlayerInventory getInventory() {
-        throw new NotImplementedYet();
+        return inventory;
     }
 
     @NotNull

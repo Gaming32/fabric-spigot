@@ -229,9 +229,17 @@ public class FabricLivingEntity extends FabricEntity implements LivingEntity {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean addPotionEffect(@NotNull PotionEffect effect, boolean force) {
-        throw new NotImplementedYet();
-//        return true;
+        //noinspection DataFlowIssue
+        getHandle().addStatusEffect(new StatusEffectInstance(
+            StatusEffect.byRawId(effect.getType().getId()),
+            effect.getDuration(),
+            effect.getAmplifier(),
+            effect.isAmbient(),
+            effect.hasParticles()
+        )); // TODO: Specify reason
+        return true;
     }
 
     @Override

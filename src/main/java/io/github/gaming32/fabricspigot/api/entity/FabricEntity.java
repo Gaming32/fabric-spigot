@@ -285,8 +285,7 @@ public abstract class FabricEntity implements Entity {
     @NotNull
     @Override
     public Location getLocation() {
-        throw new NotImplementedYet();
-//        return new Location(getWorld(), entity.getX(), entity.getY(), entity.getZ(), entity.get);
+        return new Location(getWorld(), entity.getX(), entity.getY(), entity.getZ(), entity.getBukkitYaw(), entity.getPitch());
     }
 
     @Nullable
@@ -297,7 +296,8 @@ public abstract class FabricEntity implements Entity {
             loc.setX(entity.getX());
             loc.setY(entity.getY());
             loc.setZ(entity.getZ());
-            throw new NotImplementedYet();
+            loc.setYaw(entity.getBukkitYaw());
+            loc.setPitch(entity.getPitch());
         }
         return loc;
     }

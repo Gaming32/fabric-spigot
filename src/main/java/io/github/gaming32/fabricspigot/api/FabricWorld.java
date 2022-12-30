@@ -3,8 +3,11 @@ package io.github.gaming32.fabricspigot.api;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.github.gaming32.fabricspigot.api.block.FabricBlock;
+import io.github.gaming32.fabricspigot.api.entity.FabricPlayer;
 import io.github.gaming32.fabricspigot.api.inventory.FabricItemStack;
 import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
+import io.github.gaming32.fabricspigot.ext.WorldChunkExt;
 import io.github.gaming32.fabricspigot.util.BukkitTicket;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
@@ -16,6 +19,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldEventS2CPacket;
+import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkHolder;
@@ -31,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ReadOnlyChunk;
@@ -71,6 +76,7 @@ import java.util.function.Predicate;
 
 public class FabricWorld extends FabricRegionAccessor implements World {
     private static final Random BUKKIT_RANDOM = new Random();
+    private static Map<String, GameRules.Key<?>> gamerules;
 
     private final Spigot spigot = new Spigot() {
     };
@@ -90,7 +96,7 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     @NotNull
     @Override
     public Block getBlockAt(int x, int y, int z) {
-        throw new NotImplementedYet();
+        return FabricBlock.at(world, new BlockPos(x, y, z));
     }
 
     @NotNull
@@ -146,7 +152,8 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     @NotNull
     @Override
     public Chunk getChunkAt(int x, int z) {
-        throw new NotImplementedYet();
+        //noinspection DataFlowIssue
+        return ((WorldChunkExt)world.getChunkManager().getWorldChunk(x, z, true)).getBukkitChunk();
     }
 
     @NotNull
@@ -455,7 +462,10 @@ public class FabricWorld extends FabricRegionAccessor implements World {
     public List<Player> getPlayers() {
         final List<Player> result = new ArrayList<>(world.getPlayers().size());
         for (final PlayerEntity player : world.getPlayers()) {
-            throw new NotImplementedYet();
+            final HumanEntity bukkitEntity = (HumanEntity)player.getBukkitEntity();
+            if (bukkitEntity instanceof Player serverPlayer) {
+                result.add(serverPlayer);
+            }
         }
         return result;
     }
@@ -679,7 +689,15 @@ public class FabricWorld extends FabricRegionAccessor implements World {
         world.setTimeOfDay(world.getTimeOfDay() + event.getSkipAmount());
 
         for (final Player player : getPlayers()) {
-            throw new NotImplementedYet();
+            final FabricPlayer fp = (FabricPlayer)player;
+            if (fp.getHandle().networkHandler == null) continue;
+            fp.getHandle().networkHandler.sendPacket(
+                new WorldTimeUpdateS2CPacket(
+                    fp.getHandle().world.getTime(),
+                    fp.getHandle().world.getTimeOfDay(), // TODO: ServerPlayerEntity.getPlayerTime()
+                    fp.getHandle().world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)
+                )
+            );
         }
     }
 
@@ -1285,7 +1303,9 @@ public class FabricWorld extends FabricRegionAccessor implements World {
 
     @Override
     public boolean isGameRule(@NotNull String rule) {
-        throw new NotImplementedYet();
+        //noinspection ConstantValue
+        Validate.isTrue(rule != null && !rule.isEmpty(), "Rule cannot be null or empty");
+        return getGameRulesNMS().containsKey(rule);
     }
 
     @Nullable
@@ -1302,7 +1322,31 @@ public class FabricWorld extends FabricRegionAccessor implements World {
 
     @Override
     public <T> boolean setGameRule(@NotNull GameRule<T> rule, @NotNull T newValue) {
-        throw new NotImplementedYet();
+        Validate.notNull(rule, "GameRule cannot be null");
+        Validate.notNull(newValue, "GameRule value cannot be null");
+
+        if (!isGameRule(rule.getName())) return false;
+
+        final GameRules.Rule<?> handle = getHandle().getGameRules().get(getGameRulesNMS().get(rule.getName()));
+        handle.deserialize(newValue.toString());
+        handle.changed(getHandle().getServer());
+        return true;
+    }
+
+    public static synchronized Map<String, GameRules.Key<?>> getGameRulesNMS() {
+        if (gamerules != null) {
+            return gamerules;
+        }
+
+        final Map<String, GameRules.Key<?>> gamerules = new HashMap<>();
+        GameRules.accept(new GameRules.Visitor() {
+            @Override
+            public <T extends GameRules.Rule<T>> void visit(GameRules.Key<T> key, GameRules.Type<T> type) {
+                gamerules.put(key.getName(), key);
+            }
+        });
+
+        return FabricWorld.gamerules = gamerules;
     }
 
     @NotNull

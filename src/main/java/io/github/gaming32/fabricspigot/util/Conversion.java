@@ -1,9 +1,12 @@
 package io.github.gaming32.fabricspigot.util;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
@@ -65,5 +68,10 @@ public class Conversion {
     @SuppressWarnings("unchecked")
     public static <T> MemoryModuleType<T> toMemoryModuleType(MemoryKey<T> memoryKey) {
         return (MemoryModuleType<T>)Registries.MEMORY_MODULE_TYPE.get(toIdentifier(memoryKey.getKey()));
+    }
+
+    public static Text toText(BaseComponent[] content) {
+        // TODO: Implement more optimal converter?
+        return Text.Serializer.fromJson(ComponentSerializer.toString(content));
     }
 }

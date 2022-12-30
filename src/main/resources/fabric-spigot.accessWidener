@@ -44,3 +44,11 @@ accessible	field	net/minecraft/entity/player/ItemCooldownManager$Entry	endTick	I
 accessible	field	net/minecraft/entity/player/ItemCooldownManager	tick	I
 accessible	field	net/minecraft/recipe/book/RecipeBook	recipes	Ljava/util/Set;
 accessible	method	net/minecraft/server/world/ServerWorld	getEntityLookup	()Lnet/minecraft/world/entity/EntityLookup;
+accessible	field	net/minecraft/scoreboard/ScoreboardCriterion	CRITERIA	Ljava/util/Map;
+accessible	field	net/minecraft/server/network/ServerPlayerEntity	syncedExperience	I
+accessible	method	net/minecraft/world/GameRules$Rule	deserialize	(Ljava/lang/String;)V
+accessible	method	net/minecraft/world/GameRules$Rule	changed	(Lnet/minecraft/server/MinecraftServer;)V
+accessible	method	net/minecraft/server/world/ServerEntityManager	readIfFresh	(J)V
+accessible	field	net/minecraft/world/storage/EntityChunkDataAccess	taskExecutor	Lnet/minecraft/util/thread/TaskExecutor;
+accessible	field	net/minecraft/world/ChunkSerializer	CODEC	Lcom/mojang/serialization/Codec;
+accessible	field	net/minecraft/world/chunk/Chunk	heightmaps	Ljava/util/Map;

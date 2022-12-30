@@ -1,14 +1,17 @@
 package io.github.gaming32.fabricspigot;
 
 import io.github.gaming32.fabricspigot.api.FabricServer;
+import io.github.gaming32.fabricspigot.api.scoreboard.FabricScoreboardManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.slf4j.Logger;
@@ -40,6 +43,12 @@ public class FabricSpigot implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> SERVER.setServer(null));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> SERVER.reloadVanillaCommands(dispatcher));
+
+        ServerWorldEvents.LOAD.register((server, world) -> {
+            if (world.getRegistryKey() == World.OVERWORLD) {
+                SERVER.setScoreboardManager(new FabricScoreboardManager(server, world.getScoreboard()));
+            }
+        });
     }
 
     public static Optional<ModContainer> getModContainer() {

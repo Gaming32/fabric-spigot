@@ -244,4 +244,9 @@ public class DummyStructureAccess implements StructureWorldAccess {
     public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
         return false;
     }
+
+    @Override
+    public ServerWorld getMinecraftWorld() {
+        return toServerWorld();
+    }
 }

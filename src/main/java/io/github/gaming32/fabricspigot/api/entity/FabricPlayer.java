@@ -11,7 +11,10 @@ import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
 import io.github.gaming32.fabricspigot.util.ChatMessageConversion;
 import io.github.gaming32.fabricspigot.util.Conversion;
 import io.github.gaming32.fabricspigot.util.NotImplementedYet;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerSpawnPositionS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -51,6 +54,48 @@ import java.util.*;
 @DelegateDeserialization(FabricOfflinePlayer.class)
 public class FabricPlayer extends FabricHumanEntity implements Player {
     private final Player.Spigot spigot = new Player.Spigot() {
+        @Override
+        public void sendMessage(@NotNull BaseComponent component) {
+          sendMessage(new BaseComponent[] {component});
+        }
+
+        @Override
+        public void sendMessage(BaseComponent... components) {
+           sendMessage(ChatMessageType.SYSTEM, components);
+        }
+
+        @Override
+        public void sendMessage(UUID sender, @NotNull BaseComponent component) {
+            sendMessage(ChatMessageType.CHAT, sender, component);
+        }
+
+        @Override
+        public void sendMessage(UUID sender, BaseComponent... components) {
+            sendMessage(ChatMessageType.CHAT, sender, components);
+        }
+
+        @Override
+        public void sendMessage(@NotNull ChatMessageType position, @NotNull BaseComponent component) {
+            sendMessage(position, new BaseComponent[] {component});
+        }
+
+        @Override
+        public void sendMessage(@NotNull ChatMessageType position, BaseComponent... components) {
+            sendMessage(position, null, components);
+        }
+
+        @Override
+        public void sendMessage(@NotNull ChatMessageType position, UUID sender, @NotNull BaseComponent component) {
+            sendMessage( position, sender, new BaseComponent[] {component} );
+        }
+
+        @Override
+        public void sendMessage(@NotNull ChatMessageType position, @Nullable UUID sender, @NotNull BaseComponent... components) {
+            if (getHandle().networkHandler == null) return;
+            getHandle().networkHandler.sendPacket(new GameMessageS2CPacket(
+                Conversion.toText(components), position == ChatMessageType.ACTION_BAR
+            ));
+        }
     };
     private final ConversationTracker conversationTracker = new ConversationTracker();
 
@@ -115,11 +160,11 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
         }
 
         if (fromWorld == toWorld) {
-            throw new NotImplementedYet("ServerPlayNetworkHandler.requestTeleport");
+            entity.networkHandler.requestTeleport(to.getX(), to.getY(), to.getZ(), to.getYaw(), to.getPitch()); // TODO: Teleport cause
         } else {
             throw new NotImplementedYet("World.respawn?");
         }
-//        return true;
+        return true;
     }
 
     @NotNull
@@ -717,7 +762,9 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void setExp(float exp) {
-        throw new NotImplementedYet();
+        Preconditions.checkArgument(exp >= 0.0 && exp <= 1.0, "Experience progress must be between 0.0 and 1.0 (was %s)", exp);
+        getHandle().experienceProgress = exp;
+        getHandle().syncedExperience = -1;
     }
 
     @Override
@@ -732,7 +779,9 @@ public class FabricPlayer extends FabricHumanEntity implements Player {
 
     @Override
     public void setLevel(int level) {
-        throw new NotImplementedYet();
+        Preconditions.checkArgument(level >= 0, "Experience level must not be negative (was %s)", level);
+        getHandle().experienceLevel = level;
+        getHandle().syncedExperience = -1;
     }
 
     @Override
