@@ -10,17 +10,21 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 public final class FabricSpigotEarlyRiser implements Runnable {
+    private static final String MM_EVENTS = "io/github/gaming32/fabricspigot/mm/MmEvents";
+
     @Override
     public void run() {
         PlayerManager.CLASS.registerClassTransformer(clazz -> {
-            PlayerManager.ON_PLAYER_CONNECT.findMethod(clazz, method -> {
-                final var it = MmMapping.findMethodInsn(method, PlayerManager.CLASS, PlayerManager.BROADCAST);
+            PlayerManager.onPlayerConnect.findMethod(clazz, method -> {
+                final var it = method.instructions.iterator();
+
+                MmMapping.findMethodInsn(it, PlayerManager.CLASS, PlayerManager.broadcast);
                 it.remove();
                 pop(it); // false
                 pop(it); // mutableText.formatted(Formatting.YELLOW)
                 pop(it); // this
 
-                MmMapping.findMethodInsn(it, PlayerManager.CLASS, PlayerManager.SEND_TO_ALL);
+                MmMapping.findMethodInsn(it, PlayerManager.CLASS, PlayerManager.sendToAll);
                 it.remove();
                 pop(it); // PlayerListS2CPacket.entryFromPlayer(List.of(player))
                 pop(it); // this
@@ -30,7 +34,7 @@ public final class FabricSpigotEarlyRiser implements Runnable {
                 // invokevirtual net/minecraft/server/world/ServerWorld.onPlayerConnected(Lnet/minecraft/server/network/ServerPlayerEntity;)V
                 removeOps(it, Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.INVOKEVIRTUAL);
 
-                MmMapping.findMethodInsn(it, BossBarManager.CLASS, BossBarManager.ON_PLAYER_CONNECT);
+                MmMapping.findMethodInsn(it, BossBarManager.CLASS, BossBarManager.onPlayerConnect);
                 it.remove();
                 pop(it); // player
                 pop(it); // this.server.getBossBarManager()
@@ -40,9 +44,7 @@ public final class FabricSpigotEarlyRiser implements Runnable {
                 it.add(new VarInsnNode(Opcodes.ALOAD, 17)); // mutableText
                 it.add(new VarInsnNode(Opcodes.ALOAD, 10)); // serverWorld2
                 it.add(new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    "io/github/gaming32/fabricspigot/mm/MmEvents",
-                    "playerConnection",
+                    Opcodes.INVOKESTATIC, MM_EVENTS, "playerConnection",
                     descriptor(ServerWorld.CLASS, PlayerManager.CLASS, ServerPlayerEntity.CLASS, MutableText.CLASS, ServerWorld.CLASS)
                 ));
                 it.add(new InsnNode(Opcodes.DUP));
@@ -51,6 +53,32 @@ public final class FabricSpigotEarlyRiser implements Runnable {
                 it.add(new InsnNode(Opcodes.RETURN));
                 it.add(nonNullLabel);
                 it.add(new VarInsnNode(Opcodes.ASTORE, 10)); // serverWorld2
+            });
+        });
+        ServerPlayerEntity.CLASS.registerClassTransformer(clazz -> {
+            LivingEntity.onDeath.findMethod(clazz, method -> {
+                final var it = method.instructions.iterator();
+
+                findOp(it, Opcodes.IFEQ);
+                final LabelNode target = ((JumpInsnNode)it.previous()).label;
+                it.remove();
+                it.add(new InsnNode(Opcodes.POP));
+
+                MmMapping.findMethodInsn(it, DamageTracker.CLASS, DamageTracker.getDeathMessage);
+                removeOps(it, Opcodes.ASTORE);
+
+                it.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                it.add(new VarInsnNode(Opcodes.ILOAD, 2));
+                it.add(new MethodInsnNode(
+                    Opcodes.INVOKESTATIC, MM_EVENTS, "playerDeath",
+                    descriptor(Text.CLASS, Text.CLASS, ServerPlayerEntity.CLASS, "Z")
+                ));
+                it.add(new InsnNode(Opcodes.DUP));
+                it.add(new JumpInsnNode(Opcodes.IFNULL, target));
+                it.add(new VarInsnNode(Opcodes.ASTORE, 3));
+
+                findNode(it, target);
+                it.add(new InsnNode(Opcodes.POP));
             });
         });
     }
@@ -72,11 +100,35 @@ public final class FabricSpigotEarlyRiser implements Runnable {
         it.add(new InsnNode(Opcodes.POP));
     }
 
-    private static String descriptor(MmMapping return_, MmMapping... args) {
+    private static String descriptor(Object return_, Object... args) {
         final Type[] argTypes = new Type[args.length];
         for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].type();
+            argTypes[i] = convertType(args[i]);
         }
-        return Type.getMethodDescriptor(return_.type(), argTypes);
+        return Type.getMethodDescriptor(convertType(return_), argTypes);
+    }
+
+    private static Type convertType(Object type) {
+        if (type instanceof Type asm) {
+            return asm;
+        } else if (type instanceof String descriptor) {
+            return Type.getType(descriptor);
+        } else if (type instanceof MmMapping mapping) {
+            return mapping.type();
+        } else {
+            throw new IllegalArgumentException("Unsupported type class: " + type.getClass().getName());
+        }
+    }
+
+    private static void findOp(ListIterator<AbstractInsnNode> it, int op) {
+        while (it.hasNext()) {
+            if (it.next().getOpcode() == op) break;
+        }
+    }
+
+    private static void findNode(ListIterator<AbstractInsnNode> it, AbstractInsnNode node) {
+        while (it.hasNext()) {
+            if (it.next() == node) break;
+        }
     }
 }

@@ -50,16 +50,11 @@ public final class MmMapping {
         return Type.getObjectType("net/minecraft/" + namespaced);
     }
 
-    public static ListIterator<AbstractInsnNode> findMethodInsn(ListIterator<AbstractInsnNode> it, MmMapping owner, MmMapping method) {
+    public static void findMethodInsn(ListIterator<AbstractInsnNode> it, MmMapping owner, MmMapping method) {
         while (it.hasNext()) {
             final AbstractInsnNode node = it.next();
             if (!(node instanceof MethodInsnNode methodInsn)) continue;
             if (owner.matchesClass(methodInsn.owner) && method.matches(methodInsn.name)) break;
         }
-        return it;
-    }
-
-    public static ListIterator<AbstractInsnNode> findMethodInsn(MethodNode methodNode, MmMapping owner, MmMapping method) {
-        return findMethodInsn(methodNode.instructions.iterator(), owner, method);
     }
 }

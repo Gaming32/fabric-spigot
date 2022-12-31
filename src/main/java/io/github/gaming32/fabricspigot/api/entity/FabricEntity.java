@@ -93,7 +93,7 @@ public abstract class FabricEntity implements Entity {
                     if (entity instanceof ChickenEntity) { /*return new CraftChicken(server, (EntityChicken) entity);*/ throw new NotImplementedYet("FabricChicken"); }
                     else if (entity instanceof CowEntity) {
                         if (entity instanceof MooshroomEntity) { /*return new CraftMushroomCow(server, (EntityMushroomCow) entity);*/ throw new NotImplementedYet("FabricMushroomCow"); }
-                        else { /*return new CraftCow(server, (EntityCow) entity);*/ throw new NotImplementedYet("FabricCow"); }
+                        else { return new FabricCow(server, (CowEntity) entity); }
                     }
                     else if (entity instanceof PigEntity) { /*return new CraftPig(server, (EntityPig) entity);*/ throw new NotImplementedYet("FabricPig"); }
                     else if (entity instanceof TameableEntity) {
@@ -108,7 +108,7 @@ public abstract class FabricEntity implements Entity {
                             else if (entity instanceof MuleEntity) { /*return new CraftMule(server, (EntityHorseMule) entity);*/ throw new NotImplementedYet("FabricMule"); }
                             else if (entity instanceof TraderLlamaEntity) { /*return new CraftTraderLlama(server, (EntityLlamaTrader) entity);*/ throw new NotImplementedYet("FabricTraderLlama"); }
                             else if (entity instanceof LlamaEntity) { /*return new CraftLlama(server, (EntityLlama) entity);*/ throw new NotImplementedYet("FabricLlama"); }
-                        } else if (entity instanceof HorseEntity) { /*return new CraftHorse(server, (EntityHorse) entity);*/ throw new NotImplementedYet("FabricHorse"); }
+                        } else if (entity instanceof HorseEntity) { return new FabricHorse(server, (HorseEntity) entity); }
                         else if (entity instanceof SkeletonHorseEntity) { /*return new CraftSkeletonHorse(server, (EntityHorseSkeleton) entity);*/ throw new NotImplementedYet("FabricSkeletonHorse"); }
                         else if (entity instanceof ZombieHorseEntity) { /*return new CraftZombieHorse(server, (EntityHorseZombie) entity);*/ throw new NotImplementedYet("FabricZombieHorse"); }
                         else if (entity instanceof CamelEntity) { /*return new CraftCamel(server, (Camel) entity);*/ throw new NotImplementedYet("FabricCamel"); }

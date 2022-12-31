@@ -9,8 +9,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class MmEvents {
@@ -58,5 +61,30 @@ public final class MmEvents {
         }
 
         return player.getWorld();
+    }
+
+    public static Text playerDeath(Text defaultMessage, ServerPlayerEntity player, boolean showDeathMessage) {
+        // TODO: Do more than just the death message
+        final String stringMessage = ChatMessageConversion.fromComponent(defaultMessage);
+
+        final PlayerDeathEvent event = new PlayerDeathEvent(
+            (Player)((EntityExt)player).getBukkitEntity(),
+            new ArrayList<>(),
+            0, 0,
+            stringMessage
+        );
+        //noinspection DataFlowIssue
+        player.getServer().getBukkitServer().getPluginManager().callEvent(event);
+
+        final String newMessage = event.getDeathMessage();
+
+        if (newMessage != null && newMessage.length() > 0 && showDeathMessage) {
+            if (newMessage.equals(stringMessage)) {
+                return defaultMessage;
+            } else {
+                return ChatMessageConversion.fromStringOrNull(newMessage);
+            }
+        }
+        return null;
     }
 }

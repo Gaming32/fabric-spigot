@@ -5,16 +5,16 @@ public final class MmMappings {
     public static final class PlayerManager {
         public static final MmMapping
             CLASS = new MmMapping("class_3324", "unmapped/C_digmgtxw", "server/PlayerManager"),
-            ON_PLAYER_CONNECT = new MmMapping("method_14570", "m_ngykykkq", "onPlayerConnect"),
-            BROADCAST = new MmMapping("method_43512", "m_qcclojnk", "broadcast"),
-            SEND_TO_ALL = new MmMapping("method_14581", "m_aanidhbc", "sendToAll")
+            onPlayerConnect = new MmMapping("method_14570", "m_ngykykkq", "onPlayerConnect"),
+            broadcast = new MmMapping("method_43512", "m_qcclojnk", "broadcast"),
+            sendToAll = new MmMapping("method_14581", "m_aanidhbc", "sendToAll")
                 ;
     }
 
     public static final class BossBarManager {
         public static final MmMapping
             CLASS = new MmMapping("class_3004", "unmapped/C_xtwgkoiw", "entity/boss/BossBarManager"),
-            ON_PLAYER_CONNECT = new MmMapping("method_12975", "m_llafdarr", "onPlayerConnect")
+            onPlayerConnect = new MmMapping("method_12975", "m_llafdarr", "onPlayerConnect")
                 ;
     }
 
@@ -34,5 +34,25 @@ public final class MmMappings {
         public static final MmMapping
             CLASS = new MmMapping("class_5250", "unmapped/C_npqneive", "text/MutableText")
             ;
+    }
+
+    public static final class LivingEntity {
+        public static final MmMapping
+            CLASS = new MmMapping("class_1309", "unmapped/C_usxaxydn", "entity/LivingEntity"),
+            onDeath = new MmMapping("method_6078", "unmapped/m_tflzijcx", "onDeath")
+            ;
+    }
+
+    public static final class DamageTracker {
+        public static final MmMapping
+            CLASS = new MmMapping("class_1283", "unmapped/C_xkhemiqp", "entity/damage/DamageTracker"),
+            getDeathMessage = new MmMapping("method_5548", "unmapped/m_xmrbfkiy", "getDeathMessage")
+                ;
+    }
+
+    public static final class Text {
+        public static final MmMapping
+            CLASS = new MmMapping("class_2561", "unmapped/C_rdaqiwdt", "text/Text")
+                ;
     }
 }
