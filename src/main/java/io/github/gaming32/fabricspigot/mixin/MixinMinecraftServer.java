@@ -71,7 +71,7 @@ public abstract class MixinMinecraftServer implements MinecraftServerExt, Comman
     )
     private void disablePlugins(CallbackInfo ci) {
         if (getBukkitServer() != null) {
-            getBukkitServer().disablePlugins();
+            getBukkitServer().disablePlugins(true);
         }
     }
 

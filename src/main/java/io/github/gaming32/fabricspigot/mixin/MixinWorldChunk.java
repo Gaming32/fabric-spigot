@@ -4,6 +4,7 @@ import io.github.gaming32.fabricspigot.api.FabricChunk;
 import io.github.gaming32.fabricspigot.ext.WorldChunkExt;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkSection;
@@ -42,6 +43,8 @@ public class MixinWorldChunk implements WorldChunkExt {
         BlendingData blendingData,
         CallbackInfo ci
     ) {
-        fabricSpigot$bukkitChunk = new FabricChunk((WorldChunk)(Object)this);
+        if (world instanceof ServerWorld) { // This injection gets run on clients as well, where this is a ClientWorld
+            fabricSpigot$bukkitChunk = new FabricChunk((WorldChunk)(Object)this);
+        }
     }
 }

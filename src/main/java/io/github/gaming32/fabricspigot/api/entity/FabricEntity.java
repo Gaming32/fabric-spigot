@@ -90,7 +90,7 @@ public abstract class FabricEntity implements Entity {
             else if (entity instanceof PathAwareEntity) {
                 // Animals
                 if (entity instanceof AnimalEntity) {
-                    if (entity instanceof ChickenEntity) { /*return new CraftChicken(server, (EntityChicken) entity);*/ throw new NotImplementedYet("FabricChicken"); }
+                    if (entity instanceof ChickenEntity) { return new FabricChicken(server, (ChickenEntity) entity); }
                     else if (entity instanceof CowEntity) {
                         if (entity instanceof MooshroomEntity) { /*return new CraftMushroomCow(server, (EntityMushroomCow) entity);*/ throw new NotImplementedYet("FabricMushroomCow"); }
                         else { return new FabricCow(server, (CowEntity) entity); }

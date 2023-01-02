@@ -119,6 +119,9 @@ public class FabricServer implements Server {
         this.server = server;
         commandSyncReady = false;
         if (server != null) {
+            worlds.clear();
+            successfullyRegisteredCommands.clear();
+            commandMap.clearCommands();
             server.setBukkitServer(this);
             //noinspection StaticPseudoFunctionalStyleMethod
             onlinePlayers = Collections.unmodifiableList(Lists.transform(
@@ -1311,7 +1314,7 @@ public class FabricServer implements Server {
         }
     }
 
-    public void disablePlugins() {
+    public void disablePlugins(boolean unload) {
         final CommandNode<?> root = server.getCommandManager().getDispatcher().getRoot();
         for (final String toRemove : successfullyRegisteredCommands) {
             ((CommandNodeAccess)root).getChildren().remove(toRemove);
@@ -1319,7 +1322,11 @@ public class FabricServer implements Server {
         }
         successfullyRegisteredCommands.clear();
         resendCommands();
-        pluginManager.disablePlugins();
+        if (unload) {
+            pluginManager.clearPlugins();
+        } else {
+            pluginManager.disablePlugins();
+        }
     }
 
     @Override
