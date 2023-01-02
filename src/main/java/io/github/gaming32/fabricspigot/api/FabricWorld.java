@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import io.github.gaming32.fabricspigot.api.block.FabricBlock;
 import io.github.gaming32.fabricspigot.api.entity.FabricPlayer;
 import io.github.gaming32.fabricspigot.api.inventory.FabricItemStack;
+import io.github.gaming32.fabricspigot.ext.EntityExt;
 import io.github.gaming32.fabricspigot.ext.ServerWorldExt;
 import io.github.gaming32.fabricspigot.ext.WorldChunkExt;
 import io.github.gaming32.fabricspigot.util.BukkitTicket;
@@ -454,7 +455,8 @@ public class FabricWorld extends FabricRegionAccessor implements World {
         assert lightning != null;
         lightning.refreshPositionAfterTeleport(loc.getX(), loc.getY(), loc.getZ());
         lightning.setCosmetic(true);
-        throw new NotImplementedYet();
+        world.spawnEntity(lightning); // TODO: strikeLighting and event
+        return (LightningStrike)((EntityExt)lightning).getBukkitEntity();
     }
 
     @NotNull

@@ -248,7 +248,7 @@ public abstract class FabricEntity implements Entity {
         else if (entity instanceof EndCrystalEntity) { /*return new CraftEnderCrystal(server, (EntityEnderCrystal) entity);*/ throw new NotImplementedYet("FabricEnderCrystal"); }
         else if (entity instanceof FishingBobberEntity) { /*return new CraftFishHook(server, (EntityFishingHook) entity);*/ throw new NotImplementedYet("FabricFishHook"); }
         else if (entity instanceof ItemEntity) { return new FabricItem(server, (ItemEntity) entity); }
-        else if (entity instanceof LightningEntity) { /*return new CraftLightningStrike(server, (EntityLightning) entity);*/ throw new NotImplementedYet("FabricLightningStrike"); }
+        else if (entity instanceof LightningEntity) { return new FabricLightningStrike(server, (LightningEntity) entity); }
         else if (entity instanceof AbstractMinecartEntity) {
             if (entity instanceof FurnaceMinecartEntity) { /*return new CraftMinecartFurnace(server, (EntityMinecartFurnace) entity);*/ throw new NotImplementedYet("FabricMinecartFurnace"); }
             else if (entity instanceof ChestMinecartEntity) { /*return new CraftMinecartChest(server, (EntityMinecartChest) entity);*/ throw new NotImplementedYet("FabricMinecartChest"); }
